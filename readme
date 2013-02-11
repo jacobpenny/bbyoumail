@@ -1,1 +1,5 @@
 bbyoumail
+
+Min viable product (v1) : auth/get preferences/get settings/get CCF/get folders/get messages
+v2: get call histories/contacts/greetings
+v3: update preferences/create folder/delete folder/create greeting/delete greeting/create contact/delete contact

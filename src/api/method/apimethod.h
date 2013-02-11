@@ -56,6 +56,7 @@ class GetApiMethod : public BasicApiMethod<NullApiObject, ResponseType> {
 
 template <typename RequestType, typename ResponseType>
 class PostApiMethod : public BasicApiMethod<RequestType, ResponseType> {
+	PostApiMethod(RequestType requestObject = NULL) : BasicApiMethod(requestObject) {}
 	virtual ~PostApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_POST; }
 };
