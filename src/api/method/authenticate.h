@@ -17,7 +17,7 @@ namespace method {
 class Authenticate : public GetApiMethod<AuthToken>{
 public:
 	Authenticate(const QString& uname, const QString& pin) : uname_(uname), pin_(pin) {};
-
+	virtual ~Authenticate();
 	virtual ApiVersion getVersion() const { return VERSION_3; }
 	virtual QString getPath() const {
 		return "authenticate/" + uname_ + ":" + pin_;

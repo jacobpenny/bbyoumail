@@ -1,7 +1,8 @@
-// Tabbed pane project template
 #include "YouMailBB10.hpp"
 
 #include <bb/cascades/Application>
+#include <bb/cascades/QmlDocument>
+#include <bb/cascades/AbstractPane>
 
 #include <QLocale>
 #include <QTranslator>

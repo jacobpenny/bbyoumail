@@ -1,0 +1,32 @@
+import bb.cascades 1.0
+
+NavigationPane {
+    id: nav
+    Page {
+        Container {
+            TextField {
+                id: phone_number_field
+                text: "Enter your phone number"
+            }
+            
+            TextField {
+                id: pin_field
+                text: "Enter your pin"
+            }
+            
+            Button {
+                text: "Log in"
+                onClicked: {
+                    nav.push(main_tabbed_pane);
+                }
+            }
+        
+        }
+    }
+    attachedObjects: [
+        MainTabbedPane {
+            id: main_tabbed_pane
+        }
+    ]
+}
+

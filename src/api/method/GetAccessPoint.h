@@ -32,5 +32,4 @@ private:
 };
 };
 
-
 #endif /* GETACCESSPOINT_H_ */

@@ -3,6 +3,20 @@
 #define YouMailBB10_HPP_
 
 #include <QObject>
+#include <bb/cascades/Sheet>
+
+#include <bb/system/SystemDialog>
+#include <bb/system/SystemListDialog>
+#include <bb/system/SystemPrompt>
+#include <bb/system/SystemCredentialsPrompt>
+#include <bb/system/SystemToast>
+#include <bb/system/SystemUiButton>
+#include <bb/system/SystemUiInputField>
+#include <bb/system/SystemUiError>
+#include <bb/system/SystemUiInputMode>
+#include <bb/system/SystemUiModality>
+#include <bb/system/SystemUiPosition>
+#include <bb/system/SystemUiResult>
 
 namespace bb { namespace cascades { class Application; }}
 
@@ -17,6 +31,18 @@ class YouMailBB10 : public QObject
 public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
+private:
+    void showAuthFailedToast();
+
+private:
+    bb::cascades::Sheet *loginSheet_;
+
+
+
+public slots:
+    void handleLoginButtonClicked();
+
 };
+
 
 #endif /* YouMailBB10_HPP_ */

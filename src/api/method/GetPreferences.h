@@ -2,7 +2,7 @@
  * GetPreferences.h
  *
  *  Created on: 2013-02-11
- *      Author: Jacob
+ *      Author: jpenny
  */
 
 #ifndef GETPREFERENCES_H_
