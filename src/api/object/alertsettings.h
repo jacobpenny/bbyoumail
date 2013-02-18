@@ -271,7 +271,7 @@ public:
         return pushConditions_[BIT_PUSH_TRANSCRIPTION];
     }
 
-public:
+private:
     EmailAttachment emailAttachment;
     EmailFormat emailFormat;
     EmailFormatCustom emailFormatCustom;

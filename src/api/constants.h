@@ -11,11 +11,12 @@
 namespace ymbb10 {
 namespace api {
 
-typedef long contactid_t;
-typedef long greetingid_t;
-typedef long messageid_t;
-typedef long folderid_t;
-typedef long userid_t;
+typedef unsigned long contactid_t;
+typedef unsigned long greetingid_t;
+typedef unsigned long messageid_t;
+typedef unsigned long folderid_t;
+typedef unsigned long userid_t;
+typedef unsigned long millisecond_t;
 
 }
 }

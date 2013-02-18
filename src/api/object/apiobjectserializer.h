@@ -14,6 +14,7 @@
 #include "transcriptionsettings.h"
 #include "alertsettings.h"
 #include "settings.h"
+#include "messageboxfolder.h"
 
 namespace ymbb10 {
 namespace api {
@@ -37,7 +38,15 @@ public:
 	}
 
 	virtual void visit(MessageBoxFolder* pObj) {
-		// TODO: Implement me
+		writer_.writeStartElement(pObj->getName());
+		writeMember("id", pObj->getId());
+		writeMember("name", pObj->getFolderName());
+		writeMember("sysType", pObj->isSysType());
+		writeMember("description", pObj->getDescription());
+		writeMember("lastEntryUpdated", pObj->getLastEntryUpdated());
+		writeMember("visibleEntryCount", pObj->getVisibleEntryCount());
+		writeMember("newEntryCount", pObj->getNewEntryCount());
+		writer_.writeEndElement();
 	}
 
 	virtual void visit(PushRegistration* pObj) {

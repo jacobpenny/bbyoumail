@@ -14,6 +14,7 @@
 #include "transcriptionsettings.h"
 #include "alertsettings.h"
 #include "settings.h"
+#include "messageboxfolder.h"
 #include "util/util.h"
 
 #include <QXmlParseException>
@@ -47,7 +48,29 @@ public:
 
 	virtual void visit(MessageBoxFolder* pObj) {
 		QT_ASSERT(NULL != pObj);
-		// TODO: Implement me
+		validateInput(pObj->getName());
+
+		reader_.readNext();
+	    while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
+	        if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+	        	if (reader_.name() == "id") {
+	        		pObj->setId(reader_.text().toString().toULong());
+	        	} else if (reader_.name() == "name") {
+	        		pObj->setFolderName(reader_.text().toString());
+	        	} else if (reader_.name() == "sysType") {
+	        		pObj->setSysType(yymbb10::util::toBoolean(reader_.text().toString()));
+	        	} else if (reader_.name() == "description") {
+	        		pObj->setDescription(reader_.text().toString());
+	        	} else if (reader_.name() == "lastEntryUpdated") {
+	        		pObj->setLastEntryUpdated(reader_.text().toString().toULong());
+	        	} else if (reader_.name() == "visibleEntryCount") {
+	        		pObj->setVisibleEntryCount(reader_.text().toString().toULong());
+	        	} else if (reader_.name() == "newEntryCount") {
+	        		pObj->setNewEntryCount(reader_.text().toString().toULong());
+	        	}
+	        }
+	        reader_.readNext();
+	    }
 	}
 
 	virtual void visit(PushRegistration* pObj) {
@@ -83,7 +106,6 @@ public:
 	        }
 	        reader_.readNext();
 	    }
-
 	}
 
 	virtual void visit(AlertSettings* pObj) {
