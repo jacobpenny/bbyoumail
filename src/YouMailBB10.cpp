@@ -31,7 +31,6 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 		                            SLOT(handleLoginButtonClicked()));
 		Q_ASSERT(res);
 	}
-
 }
 
 
@@ -45,20 +44,17 @@ void YouMailBB10::handleLoginButtonClicked()
 
 	// Execute authenicate call here
 
-	bool authSucess = (userPin.toString() == userPhone.toString()); // place holder
-	if (authSucess) {
+	bool authSucessful = (userPin.toString() == userPhone.toString()); // place holder
+	if (authSucessful) {
 		// store auth token
 		loginSheet_->close();
 	} else {
 		showAuthFailedToast();
 	}
-
-
 }
 
 void YouMailBB10::showAuthFailedToast() {
-    SystemToast *toast = new SystemToast(this);
-
+    SystemToast *toast = new SystemToast(this); // leak?
     toast->setBody("Authenication failed, please try again.");
     toast->show();
 }

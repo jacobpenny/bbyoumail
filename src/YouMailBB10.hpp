@@ -27,20 +27,19 @@ namespace bb { namespace cascades { class Application; }}
  */
 class YouMailBB10 : public QObject
 {
-    Q_OBJECT
+Q_OBJECT
 public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
+
+public slots:
+    void handleLoginButtonClicked();
+
 private:
     void showAuthFailedToast();
 
 private:
     bb::cascades::Sheet *loginSheet_;
-
-
-
-public slots:
-    void handleLoginButtonClicked();
 
 };
 
