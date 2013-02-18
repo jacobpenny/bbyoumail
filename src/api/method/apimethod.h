@@ -26,20 +26,31 @@ enum ApiVersion {
 	VERSION_4 = 4
 };
 
-template <typename RequestType, typename ResponseType>
-class ApiMethod {
-	ApiMethod(RequestType requestObject = NULL) : requestObject_(requestObject) {};
-
+class ApiMethodBase {
+public:
+	ApiMethodBase(ApiObject::Pointer pApiObject = NULL) : pRequestObject(pApiObject) {};
 	virtual ~ApiMethod() = 0;
 	virtual QString getPath() const = 0;
 	virtual ApiVersion getVersion() const = 0;
 	virtual HttpVerb getHttpVerb() const = 0;
 
-	const RequestType& getRequestObject() const { return requestObject_; }
-	RequestType& getRequestObject() { return requestObject_; }
+	bool hasRequestObject() const { return !!pRequestObject_; }
 
-private:
-	RequestType requestObject_;
+	const ApiObject& getRequestObject() const { return pRequestObject_.data(); }
+	ApiObject& getRequestObject() { return pRequestObject_.data(); }
+
+protected:
+	ApiObject::Pointer pRequestObject_;
+};
+
+template <typename RequestType, typename ResponseType>
+class ApiMethod : public ApiMethodBase {
+public:
+	typedef typename RequestType RequestType;
+	typedef typename ResponseType ResponseType;
+
+public:
+	ApiMethod(RequestType::Pointer pRequestObject = NULL) : ApiMethodBase(pRequestObject) {};
 };
 
 template <typename RequestType, typename ResponseType>
@@ -56,7 +67,6 @@ class GetApiMethod : public BasicApiMethod<NullApiObject, ResponseType> {
 
 template <typename RequestType, typename ResponseType>
 class PostApiMethod : public BasicApiMethod<RequestType, ResponseType> {
-	PostApiMethod(RequestType requestObject = NULL) : BasicApiMethod(requestObject) {}
 	virtual ~PostApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_POST; }
 };
