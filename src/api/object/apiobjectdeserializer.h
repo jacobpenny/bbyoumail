@@ -41,6 +41,22 @@ public:
 
 	}
 
+	template <typename T>
+	virtual void visit(ListApiObject<T>* pObj) {
+		QT_ASSERT(NULL != pObj);
+		validateInput(pObj->getName());
+
+		reader_.readNext();
+		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName()) {
+			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+				ListApiObject<T>::value_type o;
+				visit(&o);
+				pObj->push_back(o);
+			}
+			reader_.readNext();
+		}
+	}
+
 	virtual void visit(AuthToken* pObj) {
 		QT_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
