@@ -19,14 +19,13 @@ namespace object {
 class ApiObject {
 public:
 	virtual ~ApiObject() {};
-	virtual QString getName() const = 0;
 	virtual QString getContentType() const = 0; // TODO(ebrooks): Not sure if this goes here
 												// might be a property for the serializer to return
 };
 
 class NullApiObject : public ApiObject {
 public:
-	virtual QString getName() const { return ""; }
+	static QString getName() const { return ""; }
 	virtual QString getContentType() const { return ""; }
 };
 
@@ -43,10 +42,40 @@ public:
 	const_iterator begin() const { return list_.begin(); }
 	const_iterator end() const { return list_.end(); }
 
+	QString getName() { return pluralize(T::getName()); }
 	// Finish implementing me
 
 private:
 	QList<T> list_;
+
+private:
+	QString pluralize(const QString& qs) {
+		Q_ASSERT(qs.size() > 0);
+
+		QString lastLetter = qs.right(1);
+		QByteArray c = lastLetter.toAscii();
+		char lastChar = c[0];
+		switch (lastChar)
+		{
+			case 's':
+				return qs.append("es");
+			case 'x':
+				return qs.append("es");
+			case 'y':
+				return qs.left(qs.size() - 1).append("ies");
+			default:
+				return qs.append("s");
+		}
+		/*
+		if (qs.right(1) == "s" || qs.right(1) == "x") {
+			return qs.append("es");
+		} else if (qs.right(1) == "y") {
+			return qs.left(qs.size() - 1).append("ies");
+		} else {
+			return qs.append("s");
+		}*/
+	}
+
 };
 
 };

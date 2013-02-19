@@ -16,7 +16,7 @@ namespace object {
 
 class AuthToken : public ApiObject {
 public:
-	virtual QString getName() const { return "authToken"; }
+	static QString getName() const { return "authToken"; }
 
 	const QString& getAuthToken() const { return authToken_; }
 	void setAuthToken(QString& qs) { authToken_ = qs; }

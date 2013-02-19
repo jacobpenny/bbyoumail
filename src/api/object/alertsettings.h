@@ -51,6 +51,11 @@ public:
 	AlertSettings();
 	virtual ~AlertSettings();
 
+    static QString getName() const
+    {
+        return "alertSettings";
+    }
+
     unsigned long getDitchedCall() const
     {
         return ditchedCall_.to_ulong();
@@ -164,11 +169,6 @@ public:
     void setEmailFormatCustom(EmailFormatCustom emailFormatCustom)
     {
         this->emailFormatCustom = emailFormatCustom;
-    }
-
-    virtual QString getName() const
-    {
-        return "alertSettings";
     }
 
     void setSendEmailOnNewMessage(bool sendEmail)

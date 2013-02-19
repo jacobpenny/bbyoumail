@@ -20,7 +20,7 @@ public:
 	MessageBoxFolder();
 	~MessageBoxFolder();
 
-	virtual QString getName() const { return "folder"; }
+	static QString getName() const { return "folder"; }
 
 	QString getDescription() const { return description_; }
 	void setDescription(QString description) { description_ = description; }

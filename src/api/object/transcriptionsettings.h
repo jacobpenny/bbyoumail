@@ -26,7 +26,7 @@ public:
 	TranscriptionSettings();
 	virtual ~TranscriptionSettings();
 
-	QString getName() const { return "transcriptionSettings"; }
+	static QString getName() const { return "transcriptionSettings"; }
 
 	bool getEnabled() const	{ return enabled_; }
 	void setEnabled(bool enabled) {	enabled_ = enabled;	}

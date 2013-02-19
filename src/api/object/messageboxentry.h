@@ -18,10 +18,16 @@ namespace object {
 
 class MessageBoxEntry : public ApiObject {
 public:
+	enum EntryStatus {
+		STATUS_NEW = 1,
+		STATUS_ACK = 2
+	};
+
+public:
 	MessageBoxEntry();
 	virtual ~MessageBoxEntry();
 
-	virtual QString getName() { return "entry"; }
+	static QString getName() { return "entry"; }
 
 	millisecond_t getCreated() const { return created_;	}
 	void setCreated(millisecond_t created) { created_ = created; }
@@ -46,7 +52,7 @@ private:
 	millisecond_t created_;
 	millisecond_t length_;
 	QString source_;
-	unsigned long status_; // unsure ulong is appropriate
+	EntryStatus status_;
 	QString messageDataUrl_;
 
 };

@@ -36,6 +36,11 @@ public:
 	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(inBuffer_) {};
 
 public:
+	template <typename T>
+	void visit(ListApiObject<T>* pType) {
+
+	}
+
 	virtual void visit(AuthToken* pObj) {
 		QT_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
@@ -116,11 +121,11 @@ public:
 	            } else if (reader_.name() == "speakClearly") {
 	            	pObj->setSpeakClearly(ymbb10::util::toBoolean(reader_.text().toString()));
 	            } else if (reader_.name() == "smsCount") {
-	            	pObj->setSmsCount(reader_.text().toULong());
+	            	pObj->setSmsCount(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "transcribeFor") {
-	            	pObj->setTranscribeFor((TranscriptionSettings::TranscribeFor)reader_.text().toULong());
+	            	pObj->setTranscribeFor((TranscriptionSettings::TranscribeFor)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "transcribeForContact") {
-	            	pObj->setTranscribeForContact(reader_.text().toULong());
+	            	pObj->setTranscribeForContact(reader_.text().toString().toULong());
 	            } else {
 	            	qWarn() << "skipping unmapped element " + reader_.name() + " for " + pObj->getName();
 	            }
@@ -140,25 +145,25 @@ public:
 	        	// TODO(ebrooks): This will be super slow. Use a hash of the string and a switch statement.
 	            //
 	        	if (reader_.name() == "emailAttachment") {
-	        		pObj->setEmailAttachment((TranscriptionSettings::EmailAttachment)reader_.text().toULong());
+	        		pObj->setEmailAttachment((TranscriptionSettings::EmailAttachment)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "emailFormat") {
-	        		pObj->setEmailFormat((TranscriptionSettings::EmailFormat)reader_.text().toULong());
+	        		pObj->setEmailFormat((TranscriptionSettings::EmailFormat)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "emailFormatCustom") {
-	        		pObj->setEmailFormatCustom((TranscriptionSettings::EmailFormatCustom)reader_.text().toULong());
+	        		pObj->setEmailFormatCustom((TranscriptionSettings::EmailFormatCustom)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "newMessage") {
-	        		pObj->setNewMessage(reader_.text().toULong());
+	        		pObj->setNewMessage(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "missedCall") {
-	            	pObj->setMissedCall(reader_.text().toULong());
+	            	pObj->setMissedCall(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "ditchedCall") {
-	            	pObj->setDitchedCall(reader_.text().toULong());
+	            	pObj->setDitchedCall(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "pushConditions") {
-	            	pObj->setPushConditions(reader_.text().toULong());
+	            	pObj->setPushConditions(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "newMessageMask") {
-	            	pObj->setNewMessageMask(reader_.text().toULong());
+	            	pObj->setNewMessageMask(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "missedCallMask") {
-	            	pObj->setMissedCallMask(reader_.text().toULong());
+	            	pObj->setMissedCallMask(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "ditchedCallMask") {
-	            	pObj->setDitchedCallMask(reader_.text().toULong());
+	            	pObj->setDitchedCallMask(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "pushRegistrations") {
 	            	reader_.readNext();
 	        	    while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == "pushRegistrations") {

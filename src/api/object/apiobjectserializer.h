@@ -30,6 +30,15 @@ public:
 	ApiObjectSerializer() : writer_(&outBuffer_) {};
 
 public:
+	template <typename T>
+	void visit(ListApiObject<T>* pType) {
+		writer_.writeStartElement(pType->getName());
+		for (ListApiObject<T>::iterator i = pType->begin(); i != pType->end(); i++) {
+			visit(*i);
+		}
+		writer_.writeEndElement();
+	}
+
 	virtual void visit(AuthToken* pObj) {
 		writeMember(pObj->getName(), pObj->getAuthToken());
 	}

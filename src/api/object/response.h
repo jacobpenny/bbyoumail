@@ -62,7 +62,7 @@ private:
 
 class Response : public ApiObject {
 public:
-	virtual QString getName() const { return "response"; }
+	static QString getName() const { return "response"; }
 
 	bool hasError() const
 	{
@@ -133,7 +133,7 @@ private:
 
 class AuthenticationResponse : public Response {
 public:
-	virtual QString getName() const { return "authenticationResponse"; }
+	static QString getName() const { return "authenticationResponse"; }
 };
 
 } /* namespace object */
