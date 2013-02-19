@@ -15,6 +15,7 @@
 #include "alertsettings.h"
 #include "settings.h"
 #include "messageboxfolder.h"
+#include "messageboxentry.h"
 #include "util/util.h"
 
 #include <QXmlParseException>
@@ -43,7 +44,27 @@ public:
 
 	virtual void visit(MessageBoxEntry* pObj) {
 		QT_ASSERT(NULL != pObj);
-		// TODO: Implement me
+		validateInput(pObj->getName());
+
+		reader_.readNext();
+		while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
+			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+				if (reader_.name() == "id") {
+					pObj->setId(reader_.text().toString().toULong());
+				} else if (reader_.name() == "created") {
+					pObj->setCreated(reader_.text().toString().toULong);
+				} else if (reader_.name() == "length") {
+					pObj->setLength(reader_.text().toString().toULong);
+				} else if (reader_.name() == "source") {
+					pObj->setSource(reader_.text().toString());
+				} else if (reader_.name() == "status") {
+					pObj->setStatus(reader_.text().toString().toULong());
+				} else if (reader_.name() == "messageDataUrl") {
+					pObj->setMessageDataUrl(reader_.text().toString());
+				}
+			}
+			reader_.readNext();
+		}
 	}
 
 	virtual void visit(MessageBoxFolder* pObj) {

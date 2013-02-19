@@ -20,80 +20,28 @@ public:
 	MessageBoxFolder();
 	~MessageBoxFolder();
 
-	QString getDescription() const
-	{
-		return description_;
-	}
+	virtual QString getName() const { return "folder"; }
 
-	void setDescription(QString description)
-	{
-		description_ = description;
-	}
+	QString getDescription() const { return description_; }
+	void setDescription(QString description) { description_ = description; }
 
-	folderid_t getId() const
-	{
-		return id_;
-	}
+	folderid_t getId() const { return id_; }
+	void setId(folderid_t id) { id_ = id; }
 
-	void setId(folderid_t id)
-	{
-		id_ = id;
-	}
+	millisecond_t getLastEntryUpdated() const {	return lastEntryUpdated_; }
+	void setLastEntryUpdated(millisecond_t lastEntryUpdated) { lastEntryUpdated_ = lastEntryUpdated; }
 
-	millisecond_t getLastEntryUpdated() const
-	{
-		return lastEntryUpdated_;
-	}
+	QString getFolderName() const {	return folderName_;	}
+	void setFolderName(QString folderName) { folderName_ = folderName; }
 
-	void setLastEntryUpdated(millisecond_t lastEntryUpdated)
-	{
-		lastEntryUpdated_ = lastEntryUpdated;
-	}
+	unsigned long getNewEntryCount() const { return newEntryCount_;	}
+	void setNewEntryCount(unsigned long newEntryCount) { newEntryCount_ = newEntryCount; }
 
-	virtual QString getName() const
-	{
-		return "folder";
-	}
+	bool getSysType() const { return sysType_; }
+	void setSysType(bool sysType) {	sysType_ = sysType;	}
 
-	QString getFolderName() const
-	{
-		return folderName_;
-	}
-
-	void setFolderName(QString folderName)
-	{
-		folderName_ = folderName;
-	}
-
-	unsigned long getNewEntryCount() const
-	{
-		return newEntryCount_;
-	}
-
-	void setNewEntryCount(unsigned long newEntryCount)
-	{
-		newEntryCount_ = newEntryCount;
-	}
-
-	bool isSysType() const
-	{
-		return sysType_;
-	}
-
-	void setSysType(bool sysType)
-	{
-		sysType_ = sysType;
-	}
-
-	unsigned long getVisibleEntryCount() const
-	{
-		return visibleEntryCount_;
-	}
-
-	void setVisibleEntryCount(unsigned long visibleEntryCount)
-	{
-		visibleEntryCount_ = visibleEntryCount;
-	}
+	unsigned long getVisibleEntryCount() const { return visibleEntryCount_;	}
+	void setVisibleEntryCount(unsigned long visibleEntryCount) { visibleEntryCount_ = visibleEntryCount; }
 
 private:
 	folderid_t id_;

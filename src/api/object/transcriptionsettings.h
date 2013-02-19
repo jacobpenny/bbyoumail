@@ -26,71 +26,25 @@ public:
 	TranscriptionSettings();
 	virtual ~TranscriptionSettings();
 
-	QString getName() const
-	{
-		return "transcriptionSettings";
-	}
+	QString getName() const { return "transcriptionSettings"; }
 
-	bool getEnabled() const
-	{
-		return enabled_;
-	}
+	bool getEnabled() const	{ return enabled_; }
+	void setEnabled(bool enabled) {	enabled_ = enabled;	}
 
-	void setEnabled(bool enabled)
-	{
-		enabled_ = enabled;
-	}
+	bool getActive() const { return active_; }
+	void setActive(bool active) { active_ = active; }
 
-	bool getActive() const
-	{
-		return active_;
-	}
+	bool getSpeakClearly() const { return speakClearly_; }
+	void setSpeakClearly(bool speakClearly) { speakClearly_ = speakClearly;	}
 
-	void setActive(bool active)
-	{
-		active_ = active;
-	}
+	TranscribeFor getTranscribeFor() const { return transcribeFor_;	}
+	void setTranscribeFor(TranscribeFor transcribeFor) { transcribeFor_ = transcribeFor; }
 
-	bool getSpeakClearly() const
-	{
-		return speakClearly_;
-	}
+	long getSmsCount() const { return smsCount_; }
+	void setSmsCount(long smsCount) { smsCount_ = smsCount;	}
 
-	void setSpeakClearly(bool speakClearly)
-	{
-		speakClearly_ = speakClearly;
-	}
-
-	TranscribeFor getTranscribeFor() const
-	{
-		return transcribeFor_;
-	}
-
-	void setTranscribeFor(TranscribeFor transcribeFor)
-	{
-		transcribeFor_ = transcribeFor;
-	}
-
-	long getSmsCount() const
-	{
-		return smsCount_;
-	}
-
-	void setSmsCount(long smsCount)
-	{
-		smsCount_ = smsCount;
-	}
-
-
-	contactid_t getTranscribeForContact() const
-	{
-		return transcribeForContact_;
-	}
-
-	void setTranscribeForContact(contactid_t transcribeForContact)
-	{
-		transcribeForContact_ = transcribeForContact;
-	}
+	contactid_t getTranscribeForContact() const	{ return transcribeForContact_; }
+	void setTranscribeForContact(contactid_t transcribeForContact) { transcribeForContact_ = transcribeForContact; }
 
 private:
 	bool enabled_;

@@ -15,6 +15,7 @@
 #include "alertsettings.h"
 #include "settings.h"
 #include "messageboxfolder.h"
+#include "messageboxentry.h"
 
 namespace ymbb10 {
 namespace api {
@@ -26,7 +27,7 @@ private:
 	QXmlStreamWriter writer_;
 
 public:
-	ApiObjectSerializer() : streamWriter_(&outBuffer_) {};
+	ApiObjectSerializer() : writer_(&outBuffer_) {};
 
 public:
 	virtual void visit(AuthToken* pObj) {
@@ -34,14 +35,21 @@ public:
 	}
 
 	virtual void visit(MessageBoxEntry* pObj) {
-		// TODO: Implement me
+		writer_.writeStartElement(pObj->getName());
+		writeMember("id", pObj->getId());
+		writeMember("created", pObj->getCreated());
+		writeMember("length", pObj->getLength());
+		writeMember("source", pObj->getSource());
+		writeMember("status", pObj->getStatus());
+		writeMember("messageDataUrl", pObj->getMessageDataUrl());
+		writer_.writeEndElement();
 	}
 
 	virtual void visit(MessageBoxFolder* pObj) {
 		writer_.writeStartElement(pObj->getName());
 		writeMember("id", pObj->getId());
 		writeMember("name", pObj->getFolderName());
-		writeMember("sysType", pObj->isSysType());
+		writeMember("sysType", pObj->getSysType());
 		writeMember("description", pObj->getDescription());
 		writeMember("lastEntryUpdated", pObj->getLastEntryUpdated());
 		writeMember("visibleEntryCount", pObj->getVisibleEntryCount());
