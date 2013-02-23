@@ -20,7 +20,7 @@ public:
 	virtual ApiVersion getVersion() const { return VERSION_4; }
 	virtual QString getPath() const {
 		QString path = "messagebox/entry/query";
-		path.append("?includeList=messageDataUrl");
+		path.append("?includeList=messageDataUrl,folderId");
 		return path;
 	}
 };

@@ -29,8 +29,8 @@ private:
 	QString pin_;
 };
 
-};
-};
-};
+} /* namespace method */
+} /* namespace api */
+} /* namespace ymbb10 */
 
 #endif /* AUTHENTICATE_H_ */

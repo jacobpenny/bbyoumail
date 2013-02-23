@@ -35,6 +35,9 @@ public:
 	messageid_t getId() const {	return id_;	}
 	void setId(messageid_t id) { id_ = id; }
 
+	folderid_t getFolderId() const { return folderid_; }
+	void setFolderId(folderid_t fid) { folderid_ = fid; }
+
 	millisecond_t getLength() const { return length_; }
 	void setLength(millisecond_t length) { length_ = length; }
 
@@ -49,6 +52,7 @@ public:
 
 private:
 	messageid_t id_;
+	folderid_t folderid_;
 	millisecond_t created_;
 	millisecond_t length_;
 	QString source_;

@@ -28,8 +28,8 @@ private:
 	const QString phone_;
 };
 
-};
-};
-};
+} /* namespace method */
+} /* namespace api */
+} /* namespace ymbb10 */
 
 #endif /* GETPREFERENCES_H_ */

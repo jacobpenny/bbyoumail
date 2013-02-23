@@ -16,6 +16,7 @@
 #include "settings.h"
 #include "messageboxfolder.h"
 #include "messageboxentry.h"
+#include "preferences.h"
 
 namespace ymbb10 {
 namespace api {
@@ -46,6 +47,7 @@ public:
 	virtual void visit(MessageBoxEntry* pObj) {
 		writer_.writeStartElement(pObj->getName());
 		writeMember("id", pObj->getId());
+		writeMember("folderid", pObj->getFolderId());
 		writeMember("created", pObj->getCreated());
 		writeMember("length", pObj->getLength());
 		writeMember("source", pObj->getSource());
@@ -107,6 +109,28 @@ public:
 		visit(&pObj->getTranscriptionSettings());
 		visit(&pObj->getAlertSettings());
 		writeMember("userId", pObj->getUserId());
+		writer_.writeEndElement();
+	}
+
+	virtual void visit(Preferences* pObj) {
+		writer_.writeStartElement(pObj->getName());
+		writeMember("id", pObj->getUserId());
+		writeMember("title", pObj->getTitle());
+		writeMember("accessPointId", pObj->getAccessPointId());
+		writeMember("carrierId", pObj->getCarrierId());
+		writeMember("city", pObj->getCity());
+		writeMember("countryCode", pObj->getCountryCode());
+		writeMember("emailAddress", pObj->getEmailAddress());
+		writeMember("emailAttachmentType", pObj->getEmailAttachment());
+		writeMember("firstName", pObj->getFirstName());
+		writeMember("languageId", pObj->getLanguageId());
+		writeMember("lastName", pObj->getLastName());
+		writeMember("organization", pObj->getOrgranization());
+		writeMember("phoneModelId", pObj->getPhoneModelId());
+		writeMember("primaryPhoneNumber", pObj->getPrimaryPhoneNumber());
+		writeMember("state", pObj->getState());
+		writeMember("status", pObj->getStatus());
+		writeMember("timeZone", pObj->getTimeZone());
 		writer_.writeEndElement();
 	}
 

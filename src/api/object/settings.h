@@ -8,14 +8,15 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-namespace ymbb10 {
-namespace api {
-namespace object {
-
 #include "apiobject.h"
 #include "transcriptionsettings.h"
 #include "alertsettings.h"
 #include "constants.h"
+
+namespace ymbb10 {
+namespace api {
+namespace object {
+
 
 class Settings : public ApiObject {
 public:

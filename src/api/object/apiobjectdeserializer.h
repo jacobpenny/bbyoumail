@@ -82,6 +82,8 @@ public:
 					pObj->setStatus(reader_.text().toString().toULong());
 				} else if (reader_.name() == "messageDataUrl") {
 					pObj->setMessageDataUrl(reader_.text().toString());
+				} else if (reader_.name() == "folderid") {
+					pObj->setFolderId(reader_.text().toString().toULong());
 				}
 			}
 			reader_.readNext();
@@ -221,6 +223,53 @@ public:
 	        reader_.readNext();
 	    }
 	}
+
+	virtual void visit(Preferences* pObj) {
+			QT_ASSERT(NULL != pObj);
+			validateInput(pObj->getName());
+
+			reader_.readNext();
+		    while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
+		        if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+		        	if (reader_.name() == "id") {
+		        		pObj->setUserId(reader_.text().toString().toULong());
+		        	} else if (reader_.name() == "title") {
+		        		pObj->setTitle(reader_.text().toString());
+		        	} else if (reader_.name() == "accessPointId") {
+		        		pObj->setAccessPointId(reader_.text().toString().toULong());
+		        	} else if (reader_.name() == "carrierId") {
+		        		pObj->setCarrierId(reader_.text().toString().toULong());
+		        	} else if (reader_.name() == "city") {
+		        		pObj->setCity(reader_.text().toString());
+		        	} else if (reader_.name() == "countryCode") {
+		        		pObj->setCountryCode(reader_.text().toString());
+		        	} else if (reader_.name() == "emailAddress") {
+		        		pObj->setEmailAddress(reader_.text().toString());
+		        	} else if (reader_.name() == "emailAttachmentType") {
+		        		pObj->setEmailAttachment(reader_.text().toString());
+		        	} else if (reader_.name() == "emailFormat") {
+		        		pObj->setEmailFormat(reader_.text().toString());
+		        	} else if (reader_.name() == "firstName") {
+		        		pObj->setFirstName(reader_.text().toString());
+		        	} else if (reader_.name() == "languageId") {
+		        		pObj->setLanguageId(reader_.text().toString().toULong());
+		        	} else if (reader_.name() == "lastName") {
+		        		pObj->setLastName(reader_.text().toString());
+		        	} else if (reader_.name() == "organization") {
+		        		pObj->setOrganization(reader_.text().toString());
+		        	} else if (reader_.name() == "phoneModelId") {
+		        		pObj->setPhoneModelId(reader_.text().toString().toLong());
+		        	} else if (reader_.name() == "phoneModelId") {
+		        		pObj->setState(reader_.text().toString());
+		        	} else if (reader_.name() == "status") {
+		        		pObj->setStatus(reader_.text().toString().toULong());
+		        	} else if (reader_.name() == "timeZone") {
+		        		pObj->setTimeZone(reader_.text().toString());
+		        	}
+		        }
+		        reader_.readNext();
+		    }
+		}
 
 private:
 	void validateInput(QString expectedTag) {
