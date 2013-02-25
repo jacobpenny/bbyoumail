@@ -17,7 +17,7 @@ typedef unsigned long messageid_t;
 typedef unsigned long folderid_t;
 typedef unsigned long userid_t;
 typedef unsigned long millisecond_t;
-
+typedef unsigned long statuscode_t;
 }
 }
 

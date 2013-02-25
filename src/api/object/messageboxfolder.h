@@ -22,6 +22,8 @@ public:
 
 	static QString getName() const { return "folder"; }
 
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
 	QString getDescription() const { return description_; }
 	void setDescription(QString description) { description_ = description; }
 

@@ -28,19 +28,29 @@ enum ApiVersion {
 
 class ApiMethodBase {
 public:
-	ApiMethodBase(ApiObject::Pointer pApiObject = NULL) : pRequestObject(pApiObject) {};
+	ApiMethodBase(QSharedPointer<ApiObject> pRequestObject,
+				  QSharedPointer<ApiObject> pResponseObject)
+		: pRequestObject_(pRequestObject), pResponseObject_(pResponseObject) {
+
+	}
+
+public:
 	virtual ~ApiMethod() = 0;
 	virtual QString getPath() const = 0;
 	virtual ApiVersion getVersion() const = 0;
 	virtual HttpVerb getHttpVerb() const = 0;
 
-	bool hasRequestObject() const { return !!pRequestObject_; }
+	bool hasRequestObject() const { return !!pRequestObject_.data(); }
 
-	const ApiObject& getRequestObject() const { return pRequestObject_.data(); }
-	ApiObject& getRequestObject() { return pRequestObject_.data(); }
+	const QSharedPointer<ApiObject> getRequestObject() const { return pRequestObject_; }
+	QSharedPointer<ApiObject> getRequestObject() { return pRequestObject_; }
+
+	const QSharedPointer<ApiObject> getResponseObject() const { return pResponseObject_; }
+	QSharedPointer<ApiObject> getResponseObject() { return pResponseObject_; }
 
 protected:
-	ApiObject::Pointer pRequestObject_;
+	QSharedPointer<ApiObject> pRequestObject_;
+	QSharedPointer<ApiObject> pResponseObject_;
 };
 
 template <typename RequestType, typename ResponseType>
@@ -50,7 +60,10 @@ public:
 	typedef typename ResponseType ResponseType;
 
 public:
-	ApiMethod(RequestType::Pointer pRequestObject = NULL) : ApiMethodBase(pRequestObject) {};
+	ApiMethod(QSharedPointer<RequestType> pRequestObject = NULL)
+		: ApiMethodBase(pRequestObject, new ResponseType()) {
+
+	}
 };
 
 template <typename RequestType, typename ResponseType>

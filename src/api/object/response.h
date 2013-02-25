@@ -9,6 +9,7 @@
 #define RESPONSE_H_
 
 #include "apiobject.h"
+#include "apiobjectvisitor.h"
 #include "constants.h"
 
 #include <QDateTime>
@@ -54,15 +55,20 @@ public:
 		shortMessage_ = shortMessage;
 	}
 
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
+
 private:
 	QString errorCode_;
 	QString shortMessage_;
 	QString longMessage_;
 };
 
-class Response : public ApiObject {
+
+class ApiResponse : public ApiObject {
 public:
-	static QString getName() const { return "response"; }
+	virtual QString getName() const { return "response"; }
 
 	bool hasError() const
 	{
@@ -70,18 +76,17 @@ public:
 	}
 
 	bool hasError(QString errorCode, Error* pReturnError = NULL) const {
-		for (ListApiObject<Error> e = errors_.begin(); e != errors_.end(); ++e) {
+		for (ListApiObject<Error>::const_iterator e = errors_.begin(); e != errors_.end(); ++e) {
 			if (e->getErrorCode() == errorCode) {
-				if (NULL != pReturnError) pReturnError = &(*e);
+				if (NULL != pReturnError) *pReturnError = *e;
 				return true;
 			}
 		}
-
 		return false;
 	}
 
 	Error getError(QString errorCode) const {
-		for (ListApiObject<Error> e = errors_.begin(); e != errors_.end(); ++e) {
+		for (ListApiObject<Error>::const_iterator e = errors_.begin(); e != errors_.end(); ++e) {
 			if (e->getErrorCode() == errorCode) {
 				return *e;
 			}
@@ -131,12 +136,13 @@ private:
 	ListApiObject<Error> errors_;
 };
 
-class AuthenticationResponse : public Response {
+class AuthenticationResponse : public ApiResponse {
 public:
-	static QString getName() const { return "authenticationResponse"; }
+	virtual QString getName() const { return "authenticationResponse"; }
 };
 
 } /* namespace object */
 } /* namespace api */
 } /* namespace ymbb10 */
+
 #endif /* RESPONSE_H_ */

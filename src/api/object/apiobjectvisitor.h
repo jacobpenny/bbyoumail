@@ -8,6 +8,12 @@
 #ifndef APIOBJECTVISITOR_H_
 #define APIOBJECTVISITOR_H_
 
+namespace ymbb10 {
+namespace api {
+namespace object {
+
+#include "apiobject.h"
+
 class AuthToken;
 class MessageBoxEntry;
 class MessageBoxFolder;
@@ -15,12 +21,10 @@ class PushRegistration;
 class TranscriptionSettings;
 class AlertSettings;
 class Settings;
-
-namespace ymbb10 {
-namespace api {
-namespace object {
+class Error;
 
 class ApiObjectVisitor {
+public:
 	virtual ~ApiObjectVisitor() = 0;
 	virtual void visit(AuthToken*) = 0;
 	virtual void visit(MessageBoxEntry*) = 0;
@@ -29,6 +33,8 @@ class ApiObjectVisitor {
 	virtual void visit(AlertSettings*) = 0;
 	virtual void visit(Settings*) = 0;
 	virtual void visit(PushRegistration*) = 0;
+	virtual void visit(Error*) = 0;
+	virtual void visit(ListApiObject<Error>*) = 0;
 };
 
 }

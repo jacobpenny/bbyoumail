@@ -10,6 +10,7 @@
 
 
 #include "apiobject.h"
+#include "apiobjectvisitor.h"
 #include "constants.h"
 
 namespace ymbb10 {
@@ -28,6 +29,8 @@ public:
 	virtual ~MessageBoxEntry();
 
 	static QString getName() { return "entry"; }
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 	millisecond_t getCreated() const { return created_;	}
 	void setCreated(millisecond_t created) { created_ = created; }
@@ -48,7 +51,7 @@ public:
 	void setSource(QString source) { source_ = source; }
 
 	unsigned long getStatus() const { return status_; }
-	void setStatus(unsigned long status) { status_ = status; }
+	void setStatus(EntryStatus status) { status_ = status; }
 
 private:
 	messageid_t id_;
