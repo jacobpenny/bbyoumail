@@ -12,18 +12,20 @@
 #include <QUrl>
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
-
 #include <QScopedPointer>
 
 #include "api/method/apimethod.h"
 #include "api/method/authenticate.h"
 #include "api/object/apiobject.h"
 #include "api/object/apiobjectserializer.h"
+#include "api/object/apiobjectdeserializer.h"
 
 using ymbb10::method::ApiMethod;
 using ymbb10::method::Authenticate;
 using ymbb10::object::ApiObject;
+using ymbb10::object::ApiObjectVisitor;
 using ymbb10::object::ApiObjectSerializer;
+using ymbb10::object::ApiObjectDeserializer;
 
 namespace ymbb10 {
 namespace api {
@@ -59,6 +61,7 @@ public:
 	QString getUserAgent() const { return userAgent_; }
 	void setUserAgent(QString userAgent) { userAgent_ = userAgent; }
 
+private:
 	void execute(const ApiMethodBase& method) {
 		QNetworkReply* pReply = queueRequest(method);
 
@@ -67,7 +70,6 @@ public:
 		requests_.insert(pReply, method);
 	}
 
-private:
 	void logOutgoingRequest(const ApiMethodBase& method, QNetworkReply* pReply) {
 		QList<QByteArray> requestHeaders = pReply->request().rawHeaderList();
 		QList<QByteArray>::const_iterator i;
@@ -95,31 +97,38 @@ private:
 		networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, pSerializer_->getContentType());
 		networkRequest.setRawHeader("User-Agent", userAgent_);
 
-		ApiObject* pObj = method.getRequestObject();
-		QByteArray objXml;
-		if (NULL != pObj) {
-			pSerializer_->fromApiObject(pObj, objXml);
-			Q_ASSERT(0 != objXml.size());
-			networkRequest.setHeader(QNetworkRequest::ContentLengthHeader, objXml.size());
-		}
+		if (method.hasRequestObject()) {
+			QByteArray outBuffer;
+			QScopedPointer<ApiObjectVisitor> pSerializer = objectSerializerFactory.create(&outBuffer);
+			method.getRequestObject()->accept(pSerializer);
 
-		switch (method.getHttpVerb()) {
+			Q_ASSERT(0 != outBuffer.size());
+			networkRequest.setHeader(QNetworkRequest::ContentLengthHeader, outBuffer.size());
+
+			return makeRequest(method.getHttpVerb(), networkRequest, &outBuffer);
+		} else {
+			return makeRequest(method.getHttpVerb(), networkRequest, NULL);
+		}
+	}
+
+	QNetworkReply* makeRequest(HttpVerb verb, QNetworkRequest& networkRequest, QByteArray* pRequestBody) {
+		switch (verb) {
 		case HTTP_GET:
-			Q_ASSERT(0 == objXml.size());
+			Q_ASSERT(0 == pRequestBody->size());
 			return networkAccessManager_.get(networkRequest);
 
 		case HTTP_PUT:
-			return objXml.size() > 0
-					? networkAccessManager_.put(networkRequest, objXml)
+			return NULL != pRequestBody
+					? networkAccessManager_.put(networkRequest, *pRequestBody)
 					: networkAccessManager_.put(networkRequest);
 
 		case HTTP_POST:
-			return objXml.size() > 0
-					? networkAccessManager_.post(networkRequest, objXml)
+			return NULL != pRequestBody
+					? networkAccessManager_.post(networkRequest, *pRequestBody)
 					: networkAccessManager_.post(networkRequest);
 
 		case HTTP_DELETE:
-			Q_ASSERT(0 == objXml.size());
+			Q_ASSERT(0 == pRequestBody->size());
 			return networkAccessManager_.deleteResource(networkRequest);
 		}
 
@@ -138,12 +147,10 @@ private:
 			//
 			QByteArray responseData = pReply->readAll();
 			Q_ASSERT(responseData.size() > 0);
-			ApiObject::Pointer pResponseObject = pSerializer_->toApiObject(responseData);
-			Q_ASSERT(!!pResponseObject);
 
-			// TODO(ebrooks): Need to call some sort of global callback to notify of new API objects
-			// pApiDataCallback_->onResponse(i.data(),
-			notifyOnResponse(i.value(), i.key(), 200, pResponseObject);
+			QSharedPointer<ApiObjectVisitor> pObjectDeserializer = objectDeserializerFactory.create(&responseData);
+			i.value().getResponseObject()->accept(pObjectDeserializer);
+			notifyOnResponse(i.value(), i.key(), 200, i.value().getResponseObject());
 		} else {
 			//
 			// Failure
@@ -157,8 +164,10 @@ private:
 				//
 				// Possible extended error response
 				//
-				ApiObject::Pointer pErrorResponseObject = pSerializer_->toApiObject(responseData);
-				if (!!pErrorResponseObject) {
+				QSharedPointer<ApiObject> pErrorResponseObject = new ApiResponse();
+				pErrorResponseObject->accept(pObjectDeserializer_);
+				if (!!pErrorResponseObject) { // TODO(ebrooks): This will always be true
+					qWarn() << i.value().getPath() << " received error object\n";
 					notifyOnResponse(i.value(), i.key(), statusCode.toInt(), pErrorResponseObject);
 				}
 			}
@@ -167,7 +176,9 @@ private:
 		requests_.erase(i);
 	}
 
-	void notifyOnResponse(const ApiMethodBase& method, QNetworkReply* pReply, int statusCode, ApiObject::Pointer pApiObject) {
+	void notifyOnResponse(const ApiMethodBase& method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject) {
+
+		// TODO: Use another visitor here for the callbacks?
 
 	}
 
@@ -213,7 +224,8 @@ private:
 	QString apiRoot_;
 	QString userAgent_;
 	QString authToken_;
-	ApiObjectSerializer* pSerializer_;
+	ApiObjectVisitorFactory objectSerializerFactory_;
+	ApiObjectVisitorFactory objectDeserializerFactory_;
 };
 
 };

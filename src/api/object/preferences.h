@@ -16,7 +16,7 @@ namespace api {
 namespace object {
 
 
-class Preferences {
+class Preferences : public ApiObject {
 public:
 	Preferences();
 	virtual ~Preferences();
@@ -174,7 +174,6 @@ public:
 	void setUserId(userid_t userId) {
 		userId_ = userId;
 	}
-
 
 
 private:
