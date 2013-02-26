@@ -36,9 +36,19 @@ public:
 	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(inBuffer_) {};
 
 public:
-	template <typename T>
-	void visit(ListApiObject<T>* pType) {
+	virtual void visit(ListApiObjectBase* pObj) {
+		QT_ASSERT(NULL != pObj);
+		validateInput(pObj->getName());
 
+		reader_.readNext();
+		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName()) {
+			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+				ListApiObject<T>::value_type o;
+				visit(&o);
+				pObj->push_back(o);
+			}
+			reader_.readNext();
+		}
 	}
 
 	template <typename T>

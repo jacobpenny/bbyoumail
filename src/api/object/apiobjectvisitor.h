@@ -34,7 +34,7 @@ public:
 	virtual void visit(Settings*) = 0;
 	virtual void visit(PushRegistration*) = 0;
 	virtual void visit(Error*) = 0;
-	virtual void visit(ListApiObject<Error>*) = 0;
+	virtual void visit(ListApiObjectBase*) = 0;
 };
 
 }

@@ -31,11 +31,10 @@ public:
 	ApiObjectSerializer() : writer_(&outBuffer_) {};
 
 public:
-	template <typename T>
-	void visit(ListApiObject<T>* pType) {
+	void visit(ListApiObjectBase* pType) {
 		writer_.writeStartElement(pType->getName());
-		for (ListApiObject<T>::iterator i = pType->begin(); i != pType->end(); i++) {
-			visit(*i);
+		for (int i = 0; i < pType->size(); i++) {
+			visit((*pType)[i]);
 		}
 		writer_.writeEndElement();
 	}

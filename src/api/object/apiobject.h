@@ -33,32 +33,59 @@ public:
 };
 
 
-
-class ListApiObjectBase : public ApiObject {
+class ListApiObjectBase : ApiObject {
 public:
-	typedef typename QList<ApiObject*>::iterator iterator;
-	typedef typename QList<ApiObject*>::const_iterator const_iterator;
+	virtual ApiObject* operator[](int) = 0;
+	virtual int size() = 0;
 
-	iterator begin() { return list_.begin(); }
-	iterator end() { return list_.end(); }
+	virtual void push_back(ApiObject*) = 0;
+	virtual bool empty() = 0;
 
-	const_iterator begin() const { return list_.begin(); }
-	const_iterator end() const { return list_.end(); }
+	virtual QString getName() = 0;
+};
 
-	void push_back(ApiObject* pObj) { list_.push_back(pObj); }
+template < typename T >
+class ListApiObject : public ListApiObjectBase <T> {
+public:
+	virtual ApiObject* operator[](int i) {
+		ApiObject* p = dynamic_cast<ApiObject*>(&list_[i]);
+		return p;
+	}
 
-	bool empty() const { return list_.empty(); }
+	virtual int size() { return list_.size(); }
+
+	virtual void push_back(ApiObject obj) { list_.push_back(obj); }
+
+	virtual bool empty() const { return list_.empty(); }
 
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
-protected:
-	virtual QString getName() const = 0;
+	virtual QString getName() { return pluralize(T::getName()); }
 
 private:
-	QList<ApiObject*> list_;
+	QString pluralize(const QString& qs) {
+		Q_ASSERT(qs.size() > 0);
+		QString lastLetter = qs.right(1);
+		QByteArray c = lastLetter.toAscii();
+		char lastChar = c[0];
+		switch (lastChar)
+		{
+			case 's':
+				return qs.append("es");
+			case 'x':
+				return qs.append("es");
+			case 'y':
+				return qs.left(qs.size() - 1).append("ies");
+			default:
+				return qs.append("s");
+		}
+	}
+
+private:
+	QList<T> list_;
 };
 
-
+/*
 template < typename T >
 class ListApiObject : public ListApiObjectBase {
 public:
@@ -85,6 +112,7 @@ private:
 	}
 
 };
+*/
 
 };
 };
