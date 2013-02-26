@@ -8,6 +8,8 @@
 #include <QTranslator>
 #include <Qt/qdeclarativedebug.h>
 
+#include "apiclient.h"
+
 
 using namespace bb::cascades;
 

@@ -9,6 +9,8 @@
 #define TRANSCRIPTIONSETTINGS_H_
 
 #include "apiobject.h"
+#include "apiobjectvisitor.h"
+#include "constants.h"
 
 namespace ymbb10 {
 namespace api {
@@ -26,7 +28,11 @@ public:
 	TranscriptionSettings();
 	virtual ~TranscriptionSettings();
 
-	static QString getName() const { return "transcriptionSettings"; }
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString(""); } // implement me
+
+	static QString getName() { return "transcriptionSettings"; }
 
 	bool getEnabled() const	{ return enabled_; }
 	void setEnabled(bool enabled) {	enabled_ = enabled;	}

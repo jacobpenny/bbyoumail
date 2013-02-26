@@ -17,11 +17,12 @@ namespace object {
 class AuthToken;
 class MessageBoxEntry;
 class MessageBoxFolder;
-class PushRegistration;
 class TranscriptionSettings;
 class AlertSettings;
 class Settings;
 class Error;
+class ListApiObjectBase;
+class PushRegistration;
 
 class ApiObjectVisitor {
 public:

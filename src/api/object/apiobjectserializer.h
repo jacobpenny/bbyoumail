@@ -34,7 +34,7 @@ public:
 	void visit(ListApiObjectBase* pType) {
 		writer_.writeStartElement(pType->getName());
 		for (int i = 0; i < pType->size(); i++) {
-			visit((*pType)[i]);
+			visit(pType->at(i));
 		}
 		writer_.writeEndElement();
 	}

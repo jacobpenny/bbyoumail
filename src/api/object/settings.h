@@ -20,7 +20,7 @@ namespace object {
 
 class Settings : public ApiObject {
 public:
-	static QString getName() const { return "settings"; }
+	static QString getName() { return "settings"; }
 
 	userid_t getUserId() const { return userId_; }
 	void setUserId(userid_t userId) { userId_ = userId; }

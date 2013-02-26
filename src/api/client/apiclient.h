@@ -19,13 +19,16 @@
 #include "api/object/apiobject.h"
 #include "api/object/apiobjectserializer.h"
 #include "api/object/apiobjectdeserializer.h"
+#include "api/object/apiobjectvisitorfactory.h"
 
-using ymbb10::method::ApiMethod;
-using ymbb10::method::Authenticate;
-using ymbb10::object::ApiObject;
-using ymbb10::object::ApiObjectVisitor;
-using ymbb10::object::ApiObjectSerializer;
-using ymbb10::object::ApiObjectDeserializer;
+using ymbb10::api::method::ApiMethod;
+using ymbb10::api::method::ApiMethodBase;
+using ymbb10::api::method::Authenticate;
+using ymbb10::api::object::ApiObject;
+using ymbb10::api::object::ApiObjectVisitor;
+using ymbb10::api::object::ApiObjectVisitorFactory;
+using ymbb10::api::object::ApiObjectSerializer;
+using ymbb10::api::object::ApiObjectDeserializer;
 
 namespace ymbb10 {
 namespace api {
@@ -37,6 +40,19 @@ enum UseHttps {
 };
 
 class ApiClient : public QObject {
+private:
+	// for some reason, having the data members at the bottom generates errors, e.g apiRoot_ field not found
+	// I think we should move the implementation into a cpp file
+	QScopedPointer<QNetworkAccessManager> pNetworkAccessManager_;
+	RequestHash requests_;
+
+	UseHttps useHttps_;
+	QString apiRoot_;
+	QString userAgent_;
+	QString authToken_;
+	ApiObjectVisitorFactory objectSerializerFactory_;
+	ApiObjectVisitorFactory objectDeserializerFactory_;
+
 private:
 	typedef QHash<QNetworkReply*, ApiMethodBase> RequestHash;
 
@@ -56,7 +72,7 @@ public:
 
 	QString getAuthToken() const { return authToken_; }
 	void setAuthToken(QString authToken) { authToken_ = authToken; }
-	bool isAuthenticated() const { return !authToken_.empty(); }
+	bool isAuthenticated() const { return !authToken_.isEmpty(); }
 
 	QString getUserAgent() const { return userAgent_; }
 	void setUserAgent(QString userAgent) { userAgent_ = userAgent; }
@@ -216,16 +232,7 @@ private:
 		return "http"; // default
 	}
 
-private:
-	QScopedPointer<QNetworkAccessManager> pNetworkAccessManager_;
-	RequestHash requests_;
 
-	UseHttps useHttps_;
-	QString apiRoot_;
-	QString userAgent_;
-	QString authToken_;
-	ApiObjectVisitorFactory objectSerializerFactory_;
-	ApiObjectVisitorFactory objectDeserializerFactory_;
 };
 
 };

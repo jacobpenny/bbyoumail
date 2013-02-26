@@ -9,6 +9,7 @@
 #define ALERTSETTINGS_H_
 
 #include "apiobject.h"
+#include "apiobjectvisitor.h"
 #include <bitset>
 
 namespace ymbb10 {
@@ -51,7 +52,11 @@ public:
 	AlertSettings();
 	virtual ~AlertSettings();
 
-    static QString getName() const
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString(""); } // implement me
+
+    static QString getName()
     {
         return "alertSettings";
     }

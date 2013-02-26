@@ -50,8 +50,8 @@ public:
 	QString getSource() const {	return source_; }
 	void setSource(QString source) { source_ = source; }
 
-	unsigned long getStatus() const { return status_; }
-	void setStatus(EntryStatus status) { status_ = status; }
+	EntryStatus getStatus() const { return status_; }
+	void setStatus(int status) { status_ = static_cast<EntryStatus>(status); } // getting a compile error without this awkwardness
 
 private:
 	messageid_t id_;

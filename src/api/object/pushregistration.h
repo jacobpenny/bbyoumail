@@ -35,6 +35,15 @@ public:
 		CLIENT_TYPE_RESERVED1 = 6,
 		CLIENT_TYPE_RESERVED2 = 7
 	};
+
+	PushRegistration();
+	static QString getName() { return "pushRegistration"; }
+
+	virtual ~PushRegistration() {}
+	virtual QString getContentType() const { return QString(""); } // TODO
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+
 	// TODO: Implementation
 private:
 

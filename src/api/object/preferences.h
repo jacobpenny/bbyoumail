@@ -63,13 +63,14 @@ public:
 		countryCode_ = countryCode;
 	}
 
+	/* I don't think we even need this
 	date_t getCreatedTime() const {
 		return createdTime_;
 	}
 
 	void setCreatedTime(date_t createdTime) {
 		createdTime_ = createdTime;
-	}
+	} */
 
 	QString getEmailAddress() const {
 		return emailAddress_;
@@ -179,7 +180,7 @@ public:
 private:
 	userid_t userId_;
 	QString title_;
-	date_t createdTime_; // api returns something like 2011-08-30T02:46:10-07:00. Unsure on type.
+	// date_t createdTime_; // api returns something like 2011-08-30T02:46:10-07:00. Unsure on type.
 	unsigned long accessPointId_;
 	unsigned long carrierId_; // could be an enum but unsure of possible values
 	QString city_;

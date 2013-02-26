@@ -12,6 +12,9 @@
 #include "apiobjectvisitor.h"
 #include "constants.h"
 
+// debug
+#include "messageboxentry.h"
+
 #include <QDateTime>
 #include <QString>
 
@@ -30,6 +33,9 @@ public:
 	static const QString INVALID_AUTH_TOKEN;
 
 public:
+	Error();
+	virtual ~Error();
+
 	QString getErrorCode() const
 	{
 		return errorCode_;
@@ -76,9 +82,9 @@ public:
 	}
 
 	bool hasError(QString errorCode, Error* pReturnError = NULL) const {
-		for (ListApiObject<Error>::const_iterator e = errors_.begin(); e != errors_.end(); ++e) {
-			if (e->getErrorCode() == errorCode) {
-				if (NULL != pReturnError) *pReturnError = *e;
+		for (int i = 0; i < errors_.size(); ++i) {
+			if (errors_.typedAt(i)->getErrorCode() == errorCode) {
+				if (NULL != pReturnError) *pReturnError = *(errors_.typedAt(i));
 				return true;
 			}
 		}
@@ -86,12 +92,11 @@ public:
 	}
 
 	Error getError(QString errorCode) const {
-		for (ListApiObject<Error>::const_iterator e = errors_.begin(); e != errors_.end(); ++e) {
-			if (e->getErrorCode() == errorCode) {
-				return *e;
+		for (int i = 0; i < errors_.size(); ++i) {
+			if (errors_.typedAt(i)->getErrorCode() == errorCode) {
+				return *errors_.typedAt(i);
 			}
 		}
-
 		return Error();
 	}
 

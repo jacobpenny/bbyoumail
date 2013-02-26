@@ -20,7 +20,7 @@ namespace object {
 
 class ApiObject {
 public:
-	virtual ~ApiObject() {};
+	virtual ~ApiObject() {}
 	virtual QString getContentType() const = 0; // TODO(ebrooks): Not sure if this goes here
 												// might be a property for the serializer to return
 	virtual void accept(ApiObjectVisitor*) = 0;
@@ -32,35 +32,36 @@ public:
 	virtual QString getContentType() const { return ""; }
 };
 
-
 class ListApiObjectBase : ApiObject {
 public:
-	virtual ApiObject* operator[](int) = 0;
-	virtual int size() = 0;
-
+	virtual QScopedPointer<ApiObject> createElement() const = 0;
+	virtual int size() const = 0;
 	virtual void push_back(ApiObject*) = 0;
-	virtual bool empty() = 0;
-
-	virtual QString getName() = 0;
+	virtual bool empty() const = 0;
+	virtual QString getName() const = 0;
+	virtual ApiObject* at(int) = 0;
+	virtual const ApiObject* at(int) const = 0;
 };
 
 template < typename T >
-class ListApiObject : public ListApiObjectBase <T> {
+class ListApiObject : public ListApiObjectBase {
 public:
-	virtual ApiObject* operator[](int i) {
-		ApiObject* p = dynamic_cast<ApiObject*>(&list_[i]);
-		return p;
-	}
+	ListApiObject() : list_(new QList<T>) {}
+	virtual ~ListApiObject() { delete list_; }
 
-	virtual int size() { return list_.size(); }
-
-	virtual void push_back(ApiObject obj) { list_.push_back(obj); }
-
+	virtual QString getContentType() const { return QString(""); } // stub
+	virtual QScopedPointer<ApiObject> createElement() const { return QScopedPointer<ApiObject>(new T()); }
+	virtual int size() const { return list_.size(); }
+	virtual void push_back(ApiObject* pObj) { list_.push_back(*(dynamic_cast<T*>(pObj))); }
 	virtual bool empty() const { return list_.empty(); }
-
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+	virtual QString getName() const { return pluralize(T::getName()); }
 
-	virtual QString getName() { return pluralize(T::getName()); }
+	virtual ApiObject* at(int i) { return &list_[i]; }
+	virtual const ApiObject* at(int i) const { return &list_[i]; }
+
+	T* typedAt(int i) { return &list_[i]; }
+	const T* typedAt(int i) const { return &list_[i]; }
 
 private:
 	QString pluralize(const QString& qs) {
@@ -84,35 +85,6 @@ private:
 private:
 	QList<T> list_;
 };
-
-/*
-template < typename T >
-class ListApiObject : public ListApiObjectBase {
-public:
-	virtual QString getName() { return pluralize(T::getName()); }
-
-private:
-	QString pluralize(const QString& qs) {
-		Q_ASSERT(qs.size() > 0);
-
-		QString lastLetter = qs.right(1);
-		QByteArray c = lastLetter.toAscii();
-		char lastChar = c[0];
-		switch (lastChar)
-		{
-			case 's':
-				return qs.append("es");
-			case 'x':
-				return qs.append("es");
-			case 'y':
-				return qs.left(qs.size() - 1).append("ies");
-			default:
-				return qs.append("s");
-		}
-	}
-
-};
-*/
 
 };
 };

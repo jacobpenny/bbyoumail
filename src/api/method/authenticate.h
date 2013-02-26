@@ -9,12 +9,13 @@
 #define AUTHENTICATE_H_
 
 #include "apiobject.h"
+#include "authtoken.h"
 
 namespace ymbb10 {
 namespace api {
 namespace method {
 
-class Authenticate : public GetApiMethod<AuthToken>{
+class Authenticate : public GetApiMethod<object::AuthToken>{
 public:
 	Authenticate(const QString& uname, const QString& pin) : uname_(uname), pin_(pin) {};
 

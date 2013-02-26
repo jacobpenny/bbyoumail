@@ -22,6 +22,7 @@
 #include <QXmlStreamReader>
 #include <QByteArray>
 #include <QtDebug>
+#include <QScopedPointer>
 
 namespace ymbb10 {
 namespace api {
@@ -37,15 +38,15 @@ public:
 
 public:
 	virtual void visit(ListApiObjectBase* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 		reader_.readNext();
 		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName()) {
 			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
-				ListApiObject<T>::value_type o;
-				visit(&o);
-				pObj->push_back(o);
+				QScopedPointer<ApiObject> pBaseElement = pBase->createElement();
+				visit(pBaseElement);
+				pObj->push_back(pBaseElement);
 			}
 			reader_.readNext();
 		}
@@ -53,7 +54,7 @@ public:
 
 	template <typename T>
 	virtual void visit(ListApiObject<T>* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 		reader_.readNext();
@@ -68,13 +69,13 @@ public:
 	}
 
 	virtual void visit(AuthToken* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 		pObj->setAuthToken(reader_.text().toString());
 	}
 
 	virtual void visit(MessageBoxEntry* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 		reader_.readNext();
@@ -101,7 +102,7 @@ public:
 	}
 
 	virtual void visit(MessageBoxFolder* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 		reader_.readNext();
@@ -128,12 +129,12 @@ public:
 	}
 
 	virtual void visit(PushRegistration* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		// TODO: Implement me
 	}
 
 	virtual void visit(TranscriptionSettings* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 	    reader_.readNext();
@@ -163,7 +164,7 @@ public:
 	}
 
 	virtual void visit(AlertSettings* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 	    reader_.readNext();
@@ -211,7 +212,7 @@ public:
 	}
 
 	virtual void visit(Settings* pObj) {
-		QT_ASSERT(NULL != pObj);
+		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
 
 	    reader_.readNext();
@@ -235,7 +236,7 @@ public:
 	}
 
 	virtual void visit(Preferences* pObj) {
-			QT_ASSERT(NULL != pObj);
+			Q_ASSERT(NULL != pObj);
 			validateInput(pObj->getName());
 
 			reader_.readNext();

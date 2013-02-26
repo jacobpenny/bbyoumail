@@ -20,7 +20,7 @@ public:
 	MessageBoxFolder();
 	~MessageBoxFolder();
 
-	static QString getName() const { return "folder"; }
+	static QString getName() { return "folder"; }
 
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
