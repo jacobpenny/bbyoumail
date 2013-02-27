@@ -10,7 +10,7 @@
 
 #include "apiobject.h"
 
-
+using ymbb10::api::object::ApiObject;
 
 namespace ymbb10 {
 namespace api {
@@ -32,8 +32,7 @@ enum ApiVersion {
 
 class ApiMethodBase {
 public:
-	ApiMethodBase(QSharedPointer<object::ApiObject> pRequestObject,
-				  QSharedPointer<object::ApiObject> pResponseObject)
+	ApiMethodBase(ApiObject* pRequestObject, ApiObject* pResponseObject)
 		: pRequestObject_(pRequestObject), pResponseObject_(pResponseObject) {
 
 	}
@@ -64,38 +63,41 @@ public:
 	//typedef typename ResponseType ResponseType;
 
 public:
-	ApiMethod(QSharedPointer<RequestType> pRequestObject = NULL)
-		: ApiMethodBase(pRequestObject, new ResponseType()) {
-
-	}
+	ApiMethod(RequestType* pRequestObject = NULL)
+		: ApiMethodBase(pRequestObject, new ResponseType) {}
 };
 
 template <typename RequestType, typename ResponseType>
 class BasicApiMethod : public ApiMethod<RequestType, ResponseType> {
+public:
 	virtual ~BasicApiMethod() {};
 	virtual ApiVersion getVersion() const { return VERSION_3; }
 };
 
 template <typename ResponseType>
 class GetApiMethod : public BasicApiMethod<object::NullApiObject, ResponseType> {
+public:
 	virtual ~GetApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_GET; }
 };
 
 template <typename RequestType, typename ResponseType>
 class PostApiMethod : public BasicApiMethod<RequestType, ResponseType> {
+public:
 	virtual ~PostApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_POST; }
 };
 
 template <typename RequestType, typename ResponseType>
 class PutApiMethod : public BasicApiMethod<RequestType, ResponseType> {
+public:
 	virtual ~PutApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_PUT; }
 };
 
 template <typename ResponseType>
 class DeleteApiMethod : public BasicApiMethod<object::NullApiObject, ResponseType> {
+public:
 	virtual ~DeleteApiMethod() {};
 	virtual HttpVerb getHttpVerb() const { return HTTP_DELETE; }
 };

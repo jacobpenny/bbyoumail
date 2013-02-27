@@ -30,6 +30,7 @@ class NullApiObject : public ApiObject {
 public:
 	static QString getName() { return ""; }
 	virtual QString getContentType() const { return ""; }
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 };
 
 class ListApiObjectBase : ApiObject {

@@ -23,10 +23,12 @@ class Settings;
 class Error;
 class ListApiObjectBase;
 class PushRegistration;
+class NullApiObject;
 
 class ApiObjectVisitor {
 public:
 	virtual ~ApiObjectVisitor() = 0;
+	virtual void visit(NullApiObject*) = 0;
 	virtual void visit(AuthToken*) = 0;
 	virtual void visit(MessageBoxEntry*) = 0;
 	virtual void visit(MessageBoxFolder*) = 0;

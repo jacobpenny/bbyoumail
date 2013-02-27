@@ -14,12 +14,17 @@ namespace ymbb10 {
 namespace api {
 namespace object {
 
+class ApiObjectVisitor;
+
 class AuthToken : public ApiObject {
 public:
 	static QString getName() { return "authToken"; }
 
 	const QString& getAuthToken() const { return authToken_; }
 	void setAuthToken(QString& qs) { authToken_ = qs; }
+
+	virtual QString getContentType() const { return QString(""); } // TODO imp me
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 private:
 	QString authToken_;
