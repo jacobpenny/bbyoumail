@@ -23,6 +23,7 @@ class Settings;
 class Error;
 class ListApiObjectBase;
 class PushRegistration;
+class Preferences;
 class NullApiObject;
 
 class ApiObjectVisitor {
@@ -36,6 +37,7 @@ public:
 	virtual void visit(AlertSettings*) = 0;
 	virtual void visit(Settings*) = 0;
 	virtual void visit(PushRegistration*) = 0;
+	virtual void visit(Preferences*) = 0;
 	virtual void visit(Error*) = 0;
 	virtual void visit(ListApiObjectBase*) = 0;
 };

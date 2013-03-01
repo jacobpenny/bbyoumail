@@ -9,6 +9,7 @@
 #define APIOBJECTSERIALIZER_H_
 
 #include "apiobject.h"
+#include "response.h"
 #include "apiobjectvisitor.h"
 #include "authtoken.h"
 #include "transcriptionsettings.h"
@@ -24,19 +25,23 @@ namespace object {
 
 class ApiObjectSerializer : public ApiObjectVisitor {
 private:
-	QByteArray outBuffer_;
+	QByteArray* outBuffer_;
 	QXmlStreamWriter writer_;
 
 public:
-	ApiObjectSerializer() : writer_(&outBuffer_) {};
+	ApiObjectSerializer(QByteArray* outBuffer) : outBuffer_(outBuffer), writer_(outBuffer_) {};
 
 public:
 	void visit(ListApiObjectBase* pType) {
 		writer_.writeStartElement(pType->getName());
 		for (int i = 0; i < pType->size(); i++) {
-			visit(pType->at(i));
+			pType->at(i)->accept(this);
 		}
 		writer_.writeEndElement();
+	}
+
+	virtual void visit(NullApiObject* pObj) {
+		// stub
 	}
 
 	virtual void visit(AuthToken* pObj) {
@@ -46,11 +51,11 @@ public:
 	virtual void visit(MessageBoxEntry* pObj) {
 		writer_.writeStartElement(pObj->getName());
 		writeMember("id", pObj->getId());
-		writeMember("folderid", pObj->getFolderId());
+		writeMember("folderId", pObj->getFolderId());
 		writeMember("created", pObj->getCreated());
 		writeMember("length", pObj->getLength());
 		writeMember("source", pObj->getSource());
-		writeMember("status", pObj->getStatus());
+		writeMember("status", (long)pObj->getStatus());
 		writeMember("messageDataUrl", pObj->getMessageDataUrl());
 		writer_.writeEndElement();
 	}
@@ -68,7 +73,15 @@ public:
 	}
 
 	virtual void visit(PushRegistration* pObj) {
-		// TODO: Implement me
+		writer_.writeStartElement(pObj->getName());
+		writeMember("clientType", (long)pObj->getClientType());
+		writeMember("deviceId", pObj->getDeviceId());
+		writeMember("id", pObj->getId());
+		writeMember("pushType", pObj->getPushType());
+		writeMember("status", (long)pObj->getStatus());
+		writeMember("validUntil", pObj->getValidUntil());
+		writeMember("version", pObj->getVersion());
+		writer_.writeEndElement();
 	}
 
 	virtual void visit(TranscriptionSettings* pObj) {
@@ -86,7 +99,7 @@ public:
 		writer_.writeStartElement(pObj->getName());
 		writeMember("emailFormat", (long)pObj->getEmailFormat());
 		writeMember("emailFormatCustom", (long)pObj->getEmailFormatCustom());
-		writeMember("attachmentFormat", (long)pObj->getAttachmentFormat());
+		writeMember("attachmentFormat", (long)pObj->getEmailAttachment());
 		writeMember("newMessage", pObj->getNewMessage());
 		writeMember("missedCall", pObj->getMissedCall());
 		writeMember("ditchedCall", pObj->getDitchedCall());
@@ -94,11 +107,10 @@ public:
 
 		ListApiObject<PushRegistration>& pushRegistrations = pObj->getPushRegistrations();
 		writer_.writeStartElement("pushRegistrations");
-		for (ListApiObject<PushRegistration>::iterator i = pushRegistrations.begin(); i != pushRegistrations.end(); ++i) {
-			visit(*i);
+		for (int i = 0; i < pushRegistrations.size(); i++) {
+			pushRegistrations.at(i)->accept(this);
 		}
 		writer_.writeEndElement();
-
 		writer_.writeEndElement();
 	}
 
@@ -124,12 +136,20 @@ public:
 		writeMember("firstName", pObj->getFirstName());
 		writeMember("languageId", pObj->getLanguageId());
 		writeMember("lastName", pObj->getLastName());
-		writeMember("organization", pObj->getOrgranization());
+		writeMember("organization", pObj->getOrganization());
 		writeMember("phoneModelId", pObj->getPhoneModelId());
 		writeMember("primaryPhoneNumber", pObj->getPrimaryPhoneNumber());
 		writeMember("state", pObj->getState());
 		writeMember("status", pObj->getStatus());
 		writeMember("timeZone", pObj->getTimeZone());
+		writer_.writeEndElement();
+	}
+
+	virtual void visit(Error* pObj) {
+		writer_.writeStartElement(pObj->getName());
+		writeMember("errorCode", pObj->getErrorCode());
+		writeMember("shortMessage", pObj->getShortMessage());
+		writeMember("longMessage", pObj->getLongMessage());
 		writer_.writeEndElement();
 	}
 
@@ -141,6 +161,12 @@ private:
 	}
 
 	void writeMember(const QString& memberName, long num) {
+		writer_.writeStartElement(memberName);
+		writer_.writeCharacters(QString::number(num));
+		writer_.writeEndElement();
+	}
+
+	void writeMember(const QString& memberName, unsigned long num) {
 		writer_.writeStartElement(memberName);
 		writer_.writeCharacters(QString::number(num));
 		writer_.writeEndElement();

@@ -14,9 +14,12 @@
 #include <QScopedPointer>
 #include <QSharedPointer>
 #include <QNetworkAccessManager>
-#include <QNetworkReply> // fwd decl?
+#include <QNetworkReply>
+#include <QNetworkRequest>
+
 
 #include "api/method/apimethod.h"
+#include "api/method/authenticate.h"
 #include "api/object/apiobject.h"
 #include "api/object/apiobjectvisitor.h"
 #include "api/object/apiobjectvisitorfactory.h"
@@ -28,10 +31,12 @@
 
 using ymbb10::api::method::ApiMethod;
 using ymbb10::api::method::ApiMethodBase;
+using ymbb10::api::method::HttpVerb;
 using ymbb10::api::method::Authenticate;
 using ymbb10::api::object::ApiObject;
 using ymbb10::api::object::ApiObjectVisitor;
-using ymbb10::api::object::ApiObjectVisitorFactory;
+using ymbb10::api::object::ApiObjectDeserializerFactory;
+using ymbb10::api::object::ApiObjectSerializerFactory;
 using ymbb10::api::object::ApiObjectSerializer;
 using ymbb10::api::object::ApiObjectDeserializer;
 
@@ -45,7 +50,6 @@ enum UseHttps {
 };
 
 class ApiClient : public QObject {
-
 
 private:
 	typedef QHash<QNetworkReply*, ApiMethodBase> RequestHash;
@@ -97,8 +101,8 @@ private:
 	QString apiRoot_;
 	QString userAgent_;
 	QString authToken_;
-	ApiObjectVisitorFactory<ApiObjectSerializer> objectSerializerFactory_;
-	ApiObjectVisitorFactory<ApiObjectDeserializer> objectDeserializerFactory_;
+	ApiObjectSerializerFactory objectSerializerFactory_;
+	ApiObjectDeserializerFactory objectDeserializerFactory_;
 
 };
 

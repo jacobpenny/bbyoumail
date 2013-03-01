@@ -36,6 +36,8 @@ public:
 	Error();
 	virtual ~Error();
 
+	static QString getName() { return "error"; }
+
 	QString getErrorCode() const
 	{
 		return errorCode_;

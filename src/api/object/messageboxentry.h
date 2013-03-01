@@ -19,11 +19,12 @@ namespace object {
 
 class MessageBoxEntry : public ApiObject {
 public:
+	/*
 	enum EntryStatus {
 		STATUS_NEW = 1,
 		STATUS_ACK = 2
 	};
-
+	*/
 public:
 	MessageBoxEntry();
 	virtual ~MessageBoxEntry();
@@ -50,8 +51,8 @@ public:
 	QString getSource() const {	return source_; }
 	void setSource(QString source) { source_ = source; }
 
-	EntryStatus getStatus() const { return status_; }
-	void setStatus(int status) { status_ = static_cast<EntryStatus>(status); } // getting a compile error without this awkwardness
+	unsigned long getStatus() const { return status_; }
+	void setStatus(unsigned long status) { status_ = status; } // getting a compile error without this awkwardness
 
 private:
 	messageid_t id_;
@@ -59,7 +60,7 @@ private:
 	millisecond_t created_;
 	millisecond_t length_;
 	QString source_;
-	EntryStatus status_;
+	unsigned long status_;
 	QString messageDataUrl_;
 
 };

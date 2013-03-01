@@ -22,19 +22,19 @@ template <typename T>
 class ApiObjectVisitorFactory {
 public:
 	virtual ~ApiObjectVisitorFactory() {};
-	virtual QSharedPointer<ApiObjectVisitor> create(T* pArg) = 0;
+	virtual ApiObjectVisitor* create(T* pArg) = 0;
 };
 
 class ApiObjectDeserializerFactory : public ApiObjectVisitorFactory<QByteArray> {
 public:
-	QSharedPointer<ApiObjectVisitor> create(QByteArray* pArg) {
+	ApiObjectVisitor* create(QByteArray* pArg) {
 		return new ApiObjectDeserializer(pArg);
 	}
 };
 
 class ApiObjectSerializerFactory : public ApiObjectVisitorFactory<QByteArray> {
 public:
-	QSharedPointer<ApiObjectVisitor> create(QByteArray* pArg) {
+	ApiObjectVisitor* create(QByteArray* pArg) {
 		return new ApiObjectSerializer(pArg);
 	}
 };

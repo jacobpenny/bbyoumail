@@ -120,12 +120,12 @@ public:
 		lastName_ = lastName;
 	}
 
-	QString getOrgranization() const {
-		return orgranization_;
+	QString getOrganization() const {
+		return organization_;
 	}
 
-	void setOrgranization(QString orgranization) {
-		orgranization_ = orgranization;
+	void setOrganization(QString organization) {
+		organization_ = organization;
 	}
 
 	unsigned long getPhoneModelId() const {
@@ -191,7 +191,7 @@ private:
 	QString firstName_;
 	unsigned long languageId_;
 	QString lastName_;
-	QString orgranization_;
+	QString organization_;
 	long phoneModelId_;
 	QString primaryPhoneNumber_;
 	QString state_;

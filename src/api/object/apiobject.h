@@ -35,13 +35,16 @@ public:
 
 class ListApiObjectBase : ApiObject {
 public:
-	virtual QScopedPointer<ApiObject> createElement() const = 0;
+	virtual ApiObject* createElement() const = 0;
 	virtual int size() const = 0;
 	virtual void push_back(ApiObject*) = 0;
 	virtual bool empty() const = 0;
+	virtual void accept(ApiObjectVisitor*) = 0;
 	virtual QString getName() const = 0;
 	virtual ApiObject* at(int) = 0;
 	virtual const ApiObject* at(int) const = 0;
+
+
 };
 
 template < typename T >
@@ -51,7 +54,7 @@ public:
 	virtual ~ListApiObject() { delete list_; }
 
 	virtual QString getContentType() const { return QString(""); } // stub
-	virtual QScopedPointer<ApiObject> createElement() const { return QScopedPointer<ApiObject>(new T()); }
+	ApiObject* createElement() const { return QScopedPointer<ApiObject>(new T()); }
 	virtual int size() const { return list_.size(); }
 	virtual void push_back(ApiObject* pObj) { list_.push_back(*(dynamic_cast<T*>(pObj))); }
 	virtual bool empty() const { return list_.empty(); }

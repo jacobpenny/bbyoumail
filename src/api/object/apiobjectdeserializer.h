@@ -13,10 +13,14 @@
 #include "authtoken.h"
 #include "transcriptionsettings.h"
 #include "alertsettings.h"
+#include "pushregistration.h"
 #include "settings.h"
 #include "messageboxfolder.h"
 #include "messageboxentry.h"
+#include "preferences.h"
+#include "response.h"
 #include "util/util.h"
+#include "constants.h"
 
 #include <QXmlParseException>
 #include <QXmlStreamReader>
@@ -34,38 +38,29 @@ private:
 	QXmlStreamReader reader_;
 
 public:
-	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(inBuffer_) {};
+	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(*inBuffer_) {};
 
 public:
-	virtual void visit(ListApiObjectBase* pObj) {
-		Q_ASSERT(NULL != pObj);
-		validateInput(pObj->getName());
+	virtual ~ApiObjectDeserializer();
+
+	virtual void visit(ListApiObjectBase* pBase) {
+		Q_ASSERT(NULL != pBase);
+		validateInput(pBase->getName());
 
 		reader_.readNext();
-		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName()) {
+		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pBase->getName()) {
 			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
-				QScopedPointer<ApiObject> pBaseElement = pBase->createElement();
-				visit(pBaseElement);
-				pObj->push_back(pBaseElement);
+				ApiObject* pBaseElement = pBase->createElement();
+				pBaseElement->accept(this);
+				pBase->push_back(pBaseElement);
 			}
 			reader_.readNext();
 		}
 	}
 
-	template <typename T>
-	virtual void visit(ListApiObject<T>* pObj) {
+	virtual void visit(NullApiObject* pObj) {
 		Q_ASSERT(NULL != pObj);
 		validateInput(pObj->getName());
-
-		reader_.readNext();
-		while (!reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName()) {
-			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
-				ListApiObject<T>::value_type o;
-				visit(&o);
-				pObj->push_back(o);
-			}
-			reader_.readNext();
-		}
 	}
 
 	virtual void visit(AuthToken* pObj) {
@@ -84,9 +79,9 @@ public:
 				if (reader_.name() == "id") {
 					pObj->setId(reader_.text().toString().toULong());
 				} else if (reader_.name() == "created") {
-					pObj->setCreated(reader_.text().toString().toULong);
+					pObj->setCreated(reader_.text().toString().toULong());
 				} else if (reader_.name() == "length") {
-					pObj->setLength(reader_.text().toString().toULong);
+					pObj->setLength(reader_.text().toString().toULong());
 				} else if (reader_.name() == "source") {
 					pObj->setSource(reader_.text().toString());
 				} else if (reader_.name() == "status") {
@@ -113,7 +108,7 @@ public:
 	        	} else if (reader_.name() == "name") {
 	        		pObj->setFolderName(reader_.text().toString());
 	        	} else if (reader_.name() == "sysType") {
-	        		pObj->setSysType(yymbb10::util::toBoolean(reader_.text().toString()));
+	        		pObj->setSysType(ymbb10::util::toBoolean(reader_.text().toString()));
 	        	} else if (reader_.name() == "description") {
 	        		pObj->setDescription(reader_.text().toString());
 	        	} else if (reader_.name() == "lastEntryUpdated") {
@@ -156,7 +151,7 @@ public:
 	            } else if (reader_.name() == "transcribeForContact") {
 	            	pObj->setTranscribeForContact(reader_.text().toString().toULong());
 	            } else {
-	            	qWarn() << "skipping unmapped element " + reader_.name() + " for " + pObj->getName();
+	            	qWarning() << "skipping unmapped element " << reader_.name() << " for " << pObj->getName();
 	            }
 	        }
 	        reader_.readNext();
@@ -174,11 +169,11 @@ public:
 	        	// TODO(ebrooks): This will be super slow. Use a hash of the string and a switch statement.
 	            //
 	        	if (reader_.name() == "emailAttachment") {
-	        		pObj->setEmailAttachment((TranscriptionSettings::EmailAttachment)reader_.text().toString().toULong());
+	        		pObj->setEmailAttachment((AlertSettings::EmailAttachment)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "emailFormat") {
-	        		pObj->setEmailFormat((TranscriptionSettings::EmailFormat)reader_.text().toString().toULong());
+	        		pObj->setEmailFormat((AlertSettings::EmailFormat)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "emailFormatCustom") {
-	        		pObj->setEmailFormatCustom((TranscriptionSettings::EmailFormatCustom)reader_.text().toString().toULong());
+	        		pObj->setEmailFormatCustom((AlertSettings::EmailFormatCustom)reader_.text().toString().toULong());
 	            } else if (reader_.name() == "newMessage") {
 	        		pObj->setNewMessage(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "missedCall") {
@@ -199,12 +194,12 @@ public:
 	        	        if (reader_.tokenType() == QXmlStreamReader::StartElement) {
 	        	        	PushRegistration reg;
 	        	        	visit(&reg);
-	        	        	pObj->getPushRegistrations().push_back(reg);
+	        	        	pObj->getPushRegistrations().push_back(&reg);
 	        	        }
 	        	        reader_.readNext();
 	        	    }
 	            } else {
-	            	qWarn() << "skipping unmapped element " + reader_.name() + " for " + pObj->getName();
+	            	qWarning() << "skipping unmapped element " << reader_.name() << " for " << pObj->getName();
 	            }
 	        }
 	        reader_.readNext();
@@ -228,7 +223,7 @@ public:
 	            } else if (reader_.name() == "transcriptionSettings") {
 	                visit(&pObj->getTranscriptionSettings());
 	            } else {
-	            	qWarn() << "skipping unmapped element " + reader_.name() + " for " + pObj->getName();
+	            	qWarning() << "skipping unmapped element " << reader_.name() << " for " << pObj->getName();
 	            }
 	        }
 	        reader_.readNext();
@@ -282,10 +277,30 @@ public:
 		    }
 		}
 
+	virtual void visit(Error* pObj) {
+			Q_ASSERT(NULL != pObj);
+			validateInput(pObj->getName());
+
+			reader_.readNext();
+		    while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
+		        if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+		        	if (reader_.name() == "errorCode") {
+		        		pObj->setErrorCode(reader_.text().toString());
+		        	} else if (reader_.name() == "shortMessage") {
+		        		pObj->setShortMessage(reader_.text().toString());
+		        	} else if (reader_.name() == "longMessage") {
+		        		pObj->setLongMessage(reader_.text().toString());
+		        	}
+		        }
+		        reader_.readNext();
+		    }
+		}
+
 private:
 	void validateInput(QString expectedTag) {
 		if (reader_.tokenType() != QXmlStreamReader::StartElement || reader_.name() != expectedTag) {
-			throw QXmlParseException("expected tag " + expectedTag + " but got " + reader_.name());
+			QString exception = QString("expected tag %1 but got %2").arg(expectedTag).arg(reader_.name().toString());
+			throw QXmlParseException(exception);
 		}
 	}
 };

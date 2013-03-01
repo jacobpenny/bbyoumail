@@ -37,6 +37,62 @@ public:
 	};
 
 	PushRegistration();
+
+	ClientType getClientType() const {
+		return clientType_;
+	}
+
+	void setClientType(ClientType clientType) {
+		clientType_ = clientType;
+	}
+
+	QString getDeviceId() const {
+		return deviceId_;
+	}
+
+	void setDeviceId(QString deviceId) {
+		deviceId_ = deviceId;
+	}
+
+	unsigned long getId() const {
+		return id_;
+	}
+
+	void setId(unsigned long id) {
+		id_ = id;
+	}
+
+	unsigned long getPushType() const {
+		return pushType_;
+	}
+
+	void setPushType(unsigned long pushType) {
+		pushType_ = pushType;
+	}
+
+	Status getStatus() const {
+		return status_;
+	}
+
+	void setStatus(Status status) {
+		status_ = status;
+	}
+
+	millisecond_t getValidUntil() const {
+		return validUntil_;
+	}
+
+	void setValidUntil(millisecond_t validUntil) {
+		validUntil_ = validUntil;
+	}
+
+	unsigned long getVersion() const {
+		return version_;
+	}
+
+	void setVersion(unsigned long version) {
+		version_ = version;
+	}
 	static QString getName() { return "pushRegistration"; }
 
 	virtual ~PushRegistration() {}
@@ -44,9 +100,15 @@ public:
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 
-	// TODO: Implementation
-private:
 
+private:
+	ClientType clientType_;
+	QString deviceId_;
+	unsigned long id_;
+	unsigned long pushType_;
+	Status status_;
+	millisecond_t validUntil_;
+	unsigned long version_; // needs proper type
 };
 
 } /* namespace object */

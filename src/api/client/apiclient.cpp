@@ -13,25 +13,12 @@
 #include "api/object/apiobjectserializer.h"
 #include "api/object/apiobjectdeserializer.h"
 
-/*
-#include <QString>
-#include <QUrl>
-#include <QNetworkReply>
-#include <QNetworkAccessManager>
-#include <QScopedPointer>
-
-#include "api/method/apimethod.h"
-#include "api/method/authenticate.h"
-#include "api/object/apiobject.h"
-#include "api/object/apiobjectserializer.h"
-#include "api/object/apiobjectdeserializer.h"
-#include "api/object/apiobjectvisitorfactory.h"
-*/
 
 using ymbb10::api::method::ApiMethod;
 using ymbb10::api::method::ApiMethodBase;
 using ymbb10::api::method::Authenticate;
 using ymbb10::api::object::ApiObject;
+using ymbb10::api::object::ApiResponse;
 using ymbb10::api::object::ApiObjectVisitor;
 using ymbb10::api::object::ApiObjectVisitorFactory;
 using ymbb10::api::object::ApiObjectSerializer;
@@ -42,9 +29,7 @@ namespace api {
 
 void ApiClient::execute(const ApiMethodBase& method) {
 	QNetworkReply* pReply = queueRequest(method);
-
 	logOutgoingRequest(method, pReply);
-
 	requests_.insert(pReply, method);
 }
 
@@ -73,11 +58,12 @@ QNetworkReply* ApiClient::queueRequest(const ApiMethodBase& method) {
 
 	QNetworkRequest networkRequest(url);
 	networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, pSerializer_->getContentType());
-	networkRequest.setRawHeader("User-Agent", userAgent_);
+	networkRequest.setRawHeader("User-Agent", userAgent_.toLocal8Bit()); // or toLatin1() ?
+
 
 	if (method.hasRequestObject()) {
 		QByteArray outBuffer;
-		QScopedPointer<ApiObjectVisitor> pSerializer = objectSerializerFactory.create(&outBuffer);
+		ApiObjectVisitor* pSerializer = objectSerializerFactory_.create(&outBuffer);
 		method.getRequestObject()->accept(pSerializer);
 
 		Q_ASSERT(0 != outBuffer.size());
@@ -91,23 +77,23 @@ QNetworkReply* ApiClient::queueRequest(const ApiMethodBase& method) {
 
 QNetworkReply* ApiClient::makeRequest(HttpVerb verb, QNetworkRequest& networkRequest, QByteArray* pRequestBody) {
 	switch (verb) {
-	case HTTP_GET:
+	case method::HTTP_GET:
 		Q_ASSERT(0 == pRequestBody->size());
-		return networkAccessManager_.get(networkRequest);
+		return pNetworkAccessManager_->get(networkRequest);
 
-	case HTTP_PUT:
+	case method::HTTP_PUT:
 		return NULL != pRequestBody
-				? networkAccessManager_.put(networkRequest, *pRequestBody)
-						: networkAccessManager_.put(networkRequest);
+				? pNetworkAccessManager_->put(networkRequest, *pRequestBody)
+						: pNetworkAccessManager_->put(networkRequest); // needs 2nd argument
 
-	case HTTP_POST:
+	case method::HTTP_POST:
 		return NULL != pRequestBody
-				? networkAccessManager_.post(networkRequest, *pRequestBody)
-						: networkAccessManager_.post(networkRequest);
+				? pNetworkAccessManager_->post(networkRequest, *pRequestBody)
+						: pNetworkAccessManager_->post(networkRequest); // needs 2nd argument
 
-	case HTTP_DELETE:
+	case method::HTTP_DELETE:
 		Q_ASSERT(0 == pRequestBody->size());
-		return networkAccessManager_.deleteResource(networkRequest);
+		return pNetworkAccessManager_->deleteResource(networkRequest);
 	}
 
 	// TODO(ebrooks): Log warning, throw exception?
@@ -126,7 +112,7 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 		QByteArray responseData = pReply->readAll();
 		Q_ASSERT(responseData.size() > 0);
 
-		QSharedPointer<ApiObjectVisitor> pObjectDeserializer = objectDeserializerFactory.create(&responseData);
+		ApiObjectVisitor* pObjectDeserializer = objectDeserializerFactory_.create(&responseData);
 		i.value().getResponseObject()->accept(pObjectDeserializer);
 		notifyOnResponse(i.value(), i.key(), 200, i.value().getResponseObject());
 	} else {
@@ -134,7 +120,7 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 		// Failure
 		//
 		QVariant statusCode = pReply->attribute(QNetworkRequest::HttpStatusCodeAttribute);
-		qWarn() << i.value().getPath() << " received response code " << statusCode.toInt()
+		qWarning() << i.value().getPath() << " received response code " << statusCode.toInt()
 							<< " checking extended error code\n";
 
 		QByteArray responseData = pReply->readAll();
@@ -142,15 +128,14 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 			//
 			// Possible extended error response
 			//
-			QSharedPointer<ApiObject> pErrorResponseObject = new ApiResponse();
+			QSharedPointer<ApiObject> pErrorResponseObject = QSharedPointer<ApiObject>(new ApiResponse());
 			pErrorResponseObject->accept(pObjectDeserializer_);
 			if (!!pErrorResponseObject) { // TODO(ebrooks): This will always be true
-				qWarn() << i.value().getPath() << " received error object\n";
+				qWarning() << i.value().getPath() << " received error object\n";
 				notifyOnResponse(i.value(), i.key(), statusCode.toInt(), pErrorResponseObject);
 			}
 		}
 	}
-
 	requests_.erase(i);
 }
 
@@ -162,8 +147,8 @@ void ApiClient::notifyOnResponse(const ApiMethodBase& method, QNetworkReply* pRe
 
 QString ApiClient::getVersionPathSegment(const ApiMethodBase& method) {
 	switch (method.getVersion()) {
-	case ApiVersion.VERSION_3: return "/v3";
-	case ApiVersion.VERSION_4: return "/v4";
+	case method::VERSION_3: return "/v3";
+	case method::VERSION_4: return "/v4";
 	}
 
 	return "/v3"; // default
@@ -171,8 +156,8 @@ QString ApiClient::getVersionPathSegment(const ApiMethodBase& method) {
 
 QString ApiClient::getAuthQueryParam(const ApiMethodBase& method) {
 	switch (method.getVersion()) {
-	case ApiVersion.VERSION_3: return "authtoken";
-	case ApiVersion.VERSION_4: return "authToken";
+	case method::VERSION_3: return "authtoken";
+	case method::VERSION_4: return "authToken";
 	}
 
 	return "authtoken"; // default
@@ -195,5 +180,6 @@ QString ApiClient::getScheme(const ApiMethodBase& method) const {
 
 };
 };
+
 
 
