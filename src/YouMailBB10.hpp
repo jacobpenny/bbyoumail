@@ -18,6 +18,11 @@
 #include <bb/system/SystemUiPosition>
 #include <bb/system/SystemUiResult>
 
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+
+#include "api/client/apiclient.h"
+
 namespace bb { namespace cascades { class Application; }}
 
 /*!
@@ -28,6 +33,7 @@ namespace bb { namespace cascades { class Application; }}
 class YouMailBB10 : public QObject
 {
 Q_OBJECT
+
 public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
@@ -40,6 +46,8 @@ private:
 
 private:
     bb::cascades::Sheet *loginSheet_;
+    QNetworkAccessManager* mNetworkAccessManager;
+    ymbb10::api::ApiClient* apiClient_;
 
 };
 

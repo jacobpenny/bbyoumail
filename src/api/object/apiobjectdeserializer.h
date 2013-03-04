@@ -32,6 +32,9 @@ namespace ymbb10 {
 namespace api {
 namespace object {
 
+
+
+
 class ApiObjectDeserializer : public ApiObjectVisitor {
 private:
 	QByteArray* inBuffer_;
@@ -41,7 +44,11 @@ public:
 	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(*inBuffer_) {};
 
 public:
-	virtual ~ApiObjectDeserializer();
+	virtual ~ApiObjectDeserializer() { delete inBuffer_; }
+
+	virtual void visit(ApiResponse* pObj) {
+		// stub
+	}
 
 	virtual void visit(ListApiObjectBase* pBase) {
 		Q_ASSERT(NULL != pBase);
@@ -65,8 +72,13 @@ public:
 
 	virtual void visit(AuthToken* pObj) {
 		Q_ASSERT(NULL != pObj);
+
+		reader_.readNext();
+		reader_.readNext();
 		validateInput(pObj->getName());
+		reader_.readNext();
 		pObj->setAuthToken(reader_.text().toString());
+		qDebug() << pObj->getAuthToken();
 	}
 
 	virtual void visit(MessageBoxEntry* pObj) {
@@ -108,7 +120,7 @@ public:
 	        	} else if (reader_.name() == "name") {
 	        		pObj->setFolderName(reader_.text().toString());
 	        	} else if (reader_.name() == "sysType") {
-	        		pObj->setSysType(ymbb10::util::toBoolean(reader_.text().toString()));
+	        		pObj->setSysType(ymbb10::util::toBooleanJacob(reader_.text().toString()));
 	        	} else if (reader_.name() == "description") {
 	        		pObj->setDescription(reader_.text().toString());
 	        	} else if (reader_.name() == "lastEntryUpdated") {
@@ -139,11 +151,11 @@ public:
 	        	// TODO(ebrooks): This will be super slow. Use a hash of the string and a switch statement.
 	            //
 	        	if (reader_.name() == "enabled") {
-	        		pObj->setEnabled(ymbb10::util::toBoolean(reader_.text().toString()));
+	        		pObj->setEnabled(ymbb10::util::toBooleanJacob(reader_.text().toString()));
 	            } else if (reader_.name() == "active") {
-	                pObj->setActive(ymbb10::util::toBoolean(reader_.text().toString()));
+	                pObj->setActive(ymbb10::util::toBooleanJacob(reader_.text().toString()));
 	            } else if (reader_.name() == "speakClearly") {
-	            	pObj->setSpeakClearly(ymbb10::util::toBoolean(reader_.text().toString()));
+	            	pObj->setSpeakClearly(ymbb10::util::toBooleanJacob(reader_.text().toString()));
 	            } else if (reader_.name() == "smsCount") {
 	            	pObj->setSmsCount(reader_.text().toString().toULong());
 	            } else if (reader_.name() == "transcribeFor") {
@@ -300,7 +312,8 @@ private:
 	void validateInput(QString expectedTag) {
 		if (reader_.tokenType() != QXmlStreamReader::StartElement || reader_.name() != expectedTag) {
 			QString exception = QString("expected tag %1 but got %2").arg(expectedTag).arg(reader_.name().toString());
-			throw QXmlParseException(exception);
+			//throw QXmlParseException(exception); // SLOTS are not allowed to throw, just going to print the exception for now.
+			qDebug() << exception;
 		}
 	}
 };

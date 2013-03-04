@@ -25,6 +25,7 @@ class ListApiObjectBase;
 class PushRegistration;
 class Preferences;
 class NullApiObject;
+class ApiResponse;
 
 class ApiObjectVisitor {
 public:
@@ -40,7 +41,10 @@ public:
 	virtual void visit(Preferences*) = 0;
 	virtual void visit(Error*) = 0;
 	virtual void visit(ListApiObjectBase*) = 0;
+	virtual void visit(ApiResponse*) = 0;
 };
+
+inline ApiObjectVisitor::~ApiObjectVisitor() {}
 
 }
 }

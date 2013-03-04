@@ -36,7 +36,7 @@ public:
 		CLIENT_TYPE_RESERVED2 = 7
 	};
 
-	PushRegistration();
+	PushRegistration() {}
 
 	ClientType getClientType() const {
 		return clientType_;

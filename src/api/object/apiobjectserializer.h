@@ -32,6 +32,10 @@ public:
 	ApiObjectSerializer(QByteArray* outBuffer) : outBuffer_(outBuffer), writer_(outBuffer_) {};
 
 public:
+	virtual void visit(ApiResponse* pObj) {
+		// stub
+	}
+
 	void visit(ListApiObjectBase* pType) {
 		writer_.writeStartElement(pType->getName());
 		for (int i = 0; i < pType->size(); i++) {

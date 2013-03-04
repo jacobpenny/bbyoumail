@@ -56,6 +56,8 @@ protected:
 	QSharedPointer<object::ApiObject> pResponseObject_;
 };
 
+inline ApiMethodBase::~ApiMethodBase() {}
+
 template <typename RequestType, typename ResponseType>
 class ApiMethod : public ApiMethodBase {
 public:

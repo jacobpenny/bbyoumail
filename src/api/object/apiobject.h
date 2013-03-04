@@ -28,8 +28,8 @@ public:
 
 class NullApiObject : public ApiObject {
 public:
-	static QString getName() { return ""; }
-	virtual QString getContentType() const { return ""; }
+	static QString getName() { return "nullObj"; }
+	virtual QString getContentType() const { return "nulltastic"; }
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 };
 
@@ -50,11 +50,11 @@ public:
 template < typename T >
 class ListApiObject : public ListApiObjectBase {
 public:
-	ListApiObject() : list_(new QList<T>) {}
-	virtual ~ListApiObject() { delete list_; }
+	ListApiObject() {}
+	virtual ~ListApiObject() {}
 
 	virtual QString getContentType() const { return QString(""); } // stub
-	ApiObject* createElement() const { return QScopedPointer<ApiObject>(new T()); }
+	ApiObject* createElement() const { return new T(); }
 	virtual int size() const { return list_.size(); }
 	virtual void push_back(ApiObject* pObj) { list_.push_back(*(dynamic_cast<T*>(pObj))); }
 	virtual bool empty() const { return list_.empty(); }
@@ -68,21 +68,22 @@ public:
 	const T* typedAt(int i) const { return &list_[i]; }
 
 private:
-	QString pluralize(const QString& qs) {
+	QString pluralize(const QString& qs) const {
 		Q_ASSERT(qs.size() > 0);
-		QString lastLetter = qs.right(1);
+		QString result = qs;
+		QString lastLetter = result.right(1);
 		QByteArray c = lastLetter.toAscii();
 		char lastChar = c[0];
 		switch (lastChar)
 		{
 			case 's':
-				return qs.append("es");
+				return result.append("es");
 			case 'x':
-				return qs.append("es");
+				return result.append("es");
 			case 'y':
-				return qs.left(qs.size() - 1).append("ies");
+				return result.left(qs.size() - 1).append("ies");
 			default:
-				return qs.append("s");
+				return result.append("s");
 		}
 	}
 

@@ -6,6 +6,7 @@
 
 #include <QLocale>
 #include <QTranslator>
+#define QT_DECLARATIVE_DEBUG
 #include <Qt/qdeclarativedebug.h>
 
 #include "apiclient.h"
@@ -13,11 +14,16 @@
 
 using namespace bb::cascades;
 
+void myMessageOutput(QtMsgType type, const char* msg){
+                fprintf(stdout, "%s\n", msg);
+                fflush(stdout);
+}
+
 Q_DECL_EXPORT int main(int argc, char **argv)
 {
     // this is where the server is started etc
     Application app(argc, argv);
-
+    qInstallMsgHandler(myMessageOutput);
     // localization support
     QTranslator translator;
     QString locale_string = QLocale().name();

@@ -23,7 +23,7 @@ public:
 	const QString& getAuthToken() const { return authToken_; }
 	void setAuthToken(QString qs) { authToken_ = qs; }
 
-	virtual QString getContentType() const { return QString(""); } // TODO imp me
+	virtual QString getContentType() const { return QString("authy"); } // TODO imp me
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 private:

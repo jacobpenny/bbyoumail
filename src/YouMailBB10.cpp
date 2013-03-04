@@ -1,13 +1,21 @@
 // Tabbed pane project template
 #include "YouMailBB10.hpp"
 
+
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
 
+#include <QtDebug>
+
+
+//using ymbb10::api::ApiClient;
+using ymbb10::api::method::Authenticate;
+using ymbb10::api::object::AuthToken;
 
 using namespace bb::cascades;
 using namespace bb::system;
+
 
 YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 {
@@ -17,8 +25,9 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 	// create root object for the UI
 	AbstractPane *root = qml->createRootObject<AbstractPane>();
-	// set created root object as a scene
-	app->setScene(root);
+
+	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app);
+
 
 	bool loggedIn = false; // place holder
 	if (!loggedIn) {
@@ -31,6 +40,9 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 		                            SLOT(handleLoginButtonClicked()));
 		Q_ASSERT(res);
 	}
+
+	// set created root object as a scene
+	app->setScene(root);
 }
 
 
@@ -44,6 +56,10 @@ void YouMailBB10::handleLoginButtonClicked()
 
 	// Execute authenicate call here
 
+
+	QSharedPointer<ApiMethodBase> authCall(new Authenticate(userPhone.toString(), userPin.toString()));
+	apiClient_->execute(authCall);
+
 	bool authSucessful = (userPin.toString() == userPhone.toString()); // place holder
 	if (authSucessful) {
 		// store auth token
@@ -55,6 +71,6 @@ void YouMailBB10::handleLoginButtonClicked()
 
 void YouMailBB10::showAuthFailedToast() {
     SystemToast *toast = new SystemToast(this); // leak?
-    toast->setBody("Authenication failed, please try again.");
+    toast->setBody("Authentication failed, please try again.");
     toast->show();
 }

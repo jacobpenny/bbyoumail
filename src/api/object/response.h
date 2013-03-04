@@ -33,8 +33,8 @@ public:
 	static const QString INVALID_AUTH_TOKEN;
 
 public:
-	Error();
-	virtual ~Error();
+	Error() {}
+	virtual ~Error() {}
 
 	static QString getName() { return "error"; }
 
@@ -77,6 +77,8 @@ private:
 class ApiResponse : public ApiObject {
 public:
 	virtual QString getName() const { return "response"; }
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+	virtual QString getContentType() const { return QString("application/xml"); }
 
 	bool hasError() const
 	{

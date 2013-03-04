@@ -8,6 +8,8 @@
 #ifndef APICLIENT_H_
 #define APICLIENT_H_
 
+#include <bb/cascades/Application>
+#include <QObject>
 #include <QByteArray>
 #include <QString>
 #include <QHash>
@@ -26,9 +28,7 @@
 #include "api/object/apiobjectserializer.h"
 #include "api/object/apiobjectdeserializer.h"
 
-
-
-
+// must remove these using decls
 using ymbb10::api::method::ApiMethod;
 using ymbb10::api::method::ApiMethodBase;
 using ymbb10::api::method::HttpVerb;
@@ -50,19 +50,15 @@ enum UseHttps {
 };
 
 class ApiClient : public QObject {
+	Q_OBJECT
+private slots:
+	void onResponse(QNetworkReply* pReply);
 
 private:
-	typedef QHash<QNetworkReply*, ApiMethodBase> RequestHash;
+	typedef QHash<QNetworkReply*, QSharedPointer<ApiMethodBase> > RequestHash;
 
 public:
-	ApiClient(QString apiRoot, QString userAgent)
-		: apiRoot_(apiRoot), userAgent_(userAgent) {
-
-		pNetworkAccessManager_.reset(new QNetworkAccessManager(this));
-		connect(pNetworkAccessManager_.data(),
-				SIGNAL(finished(QNetworkReply*)),
-		        this, SLOT(onResponse(QNetworkReply*)));
-	}
+	ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app);
 
 public:
 	QString getApiRoot() const { return apiRoot_; }
@@ -75,26 +71,25 @@ public:
 	QString getUserAgent() const { return userAgent_; }
 	void setUserAgent(QString userAgent) { userAgent_ = userAgent; }
 
+	void execute(QSharedPointer<ApiMethodBase> method);
+
+
+
 private:
-	void execute(const ApiMethodBase& method);
-
-	void logOutgoingRequest(const ApiMethodBase& method, QNetworkReply* pReply);
-
-	QNetworkReply* queueRequest(const ApiMethodBase& method);
-
+	void logOutgoingRequest(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply);
+	QNetworkReply* queueRequest(QSharedPointer<ApiMethodBase> method);
 	QNetworkReply* makeRequest(HttpVerb verb, QNetworkRequest& networkRequest, QByteArray* pRequestBody);
-
-	void onResponse(QNetworkReply* pReply);
-
-	void notifyOnResponse(const ApiMethodBase& method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject);
+	void notifyOnResponse(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject);
 
 private:
-	QString getVersionPathSegment(const ApiMethodBase& method);
-	QString getAuthQueryParam(const ApiMethodBase& method);
-	QString getScheme(const ApiMethodBase& method) const;
+	QString getVersionPathSegment(QSharedPointer<ApiMethodBase> method);
+	QString getAuthQueryParam(QSharedPointer<ApiMethodBase> method);
+	QString getScheme(QSharedPointer<ApiMethodBase> method) const;
 
 private:
-	QScopedPointer<QNetworkAccessManager> pNetworkAccessManager_;
+	// QScopedPointer<QNetworkAccessManager> pNetworkAccessManager_;
+	QNetworkAccessManager* pNetworkAccessManager_;
+
 	RequestHash requests_;
 
 	UseHttps useHttps_;

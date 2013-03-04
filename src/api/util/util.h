@@ -11,7 +11,7 @@
 namespace ymbb10 {
 namespace util {
 
-bool toBoolean(const QString& s) {
+inline bool toBooleanJacob(const QString& s) {
 	return s == "true" || s.toLong() > 0;
 }
 
