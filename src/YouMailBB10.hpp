@@ -43,12 +43,11 @@ public:
 
 
 public slots:
-    void responseMessage(QString message) {
-    	qDebug() << message;
-    }
+    void responseMessage(QString message);
     void handleLoginButtonClicked();
+    void testSlot(ApiMethodBase*);
 private:
-  //  void showAuthFailedToast();
+    void showAuthFailedToast();
 
 
 private:

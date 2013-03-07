@@ -13,7 +13,7 @@
 
 
 using ymbb10::api::method::Authenticate;
-//using ymbb10::api::method::ApiMethodResponseHandler;
+using ymbb10::api::method::ApiMethodResponseHandler;
 using ymbb10::api::object::AuthToken;
 
 using namespace bb::cascades;
@@ -27,17 +27,24 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 
 	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app, this);
-	/*
-	ApiMethodResponseHandler responseHandler; // should this be heap?
 
-	connect(&responseHandler, SIGNAL(responseProcessed(QString)),
+	ApiMethodResponseHandler* responseHandler = new ApiMethodResponseHandler; // should this be heap?
+
+
+	bool r1 = QObject::connect(responseHandler, SIGNAL(responseProcessed(QString)),
 			this, SLOT(responseMessage(QString)));
-	connect(apiClient_, SIGNAL(responseDeserialized(QSharedPointer<ApiMethodBase>)),
-			&responseHandler, SLOT(handleResponse(QSharedPointer<ApiMethodBase>)));
+
+	bool r2 = QObject::connect(apiClient_, SIGNAL(responseDeserialized(ApiMethodBase*)),
+			responseHandler, SLOT(handleResponse(ApiMethodBase*)));
+
+
+	Q_ASSERT(r1);
+	Q_ASSERT(r2);
 
 	pResponseHandlerThread_ = new QThread;
-	responseHandler.moveToThread(pResponseHandlerThread_);
-	*/
+	responseHandler->moveToThread(pResponseHandlerThread_);
+
+	pResponseHandlerThread_->start();
 
 	bool loggedIn = false; // place holder
 	if (!loggedIn) {
@@ -69,7 +76,7 @@ void YouMailBB10::handleLoginButtonClicked()
 
 	QSharedPointer<ApiMethodBase> authCall(new Authenticate(userPhone.toString(), userPin.toString()));
 	apiClient_->execute(authCall);
-
+	/*
 	bool authSucessful = (userPin.toString() == userPhone.toString()); // place holder
 	if (authSucessful) {
 		// store auth token
@@ -77,12 +84,28 @@ void YouMailBB10::handleLoginButtonClicked()
 	} else {
 		//showAuthFailedToast();
 	}
+	*/
 }
 
-/*
+void YouMailBB10::responseMessage(QString message) {
+	qDebug() << message;
+	if (message == "AUTH_SUCCESS") {
+		loginSheet_->close();
+	} else if (message == "AUTH_FAILED") {
+		showAuthFailedToast();
+	}
+}
+
+void YouMailBB10::testSlot(ApiMethodBase*)
+{
+	qDebug() << "testSlot";
+}
+
+
 void YouMailBB10::showAuthFailedToast() {
     SystemToast *toast = new SystemToast(this); // leak?
     toast->setBody("Authentication failed, please try again.");
     toast->show();
 }
-*/
+
+

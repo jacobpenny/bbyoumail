@@ -147,21 +147,19 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 			}
 		}
 	}
-	requests_.erase(i);
+	//requests_.erase(i);
 }
 
 void ApiClient::notifyOnResponse(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject) {
 	// TODO attach ApiObject to method
+	qDebug() << "entering notifyOnResponse()";
 
-	emit responseDeserialized(method);
-
-	/*
 	if (statusCode == 200) {
-		method.data()->accept(pApiMethodResponseHandler_);
+		emit responseDeserialized(method.data());
 	} else {
-		method.data()->accept(pApiMethodErrorHandler_);
+		// emit errorDeserialized(method.data());
 	}
-	*/
+
 }
 
 QString ApiClient::getVersionPathSegment(QSharedPointer<ApiMethodBase> method) {
@@ -196,6 +194,7 @@ QString ApiClient::getScheme(QSharedPointer<ApiMethodBase> method) const {
 
 	return "http"; // default
 }
+
 
 };
 };

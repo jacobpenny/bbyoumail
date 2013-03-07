@@ -74,7 +74,8 @@ public:
 	void execute(QSharedPointer<ApiMethodBase> method);
 
 signals:
-	void responseDeserialized(QSharedPointer<ApiMethodBase> method);
+	void responseDeserialized(ApiMethodBase* method);
+	void testSignal(ApiMethodBase*);
 
 private:
 	void logOutgoingRequest(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply);

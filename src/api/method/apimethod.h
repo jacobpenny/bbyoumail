@@ -10,6 +10,7 @@
 
 
 #include "api/object/apiobject.h"
+#include "api/method/apimethodvisitor.h"
 
 using ymbb10::api::object::ApiObject;
 
@@ -43,6 +44,8 @@ public:
 	virtual QString getPath() const = 0;
 	virtual ApiVersion getVersion() const = 0;
 	virtual HttpVerb getHttpVerb() const = 0;
+
+	virtual void accept(ApiMethodVisitor*) = 0;
 
 	bool hasRequestObject() const { return !!pRequestObject_.data(); }
 
