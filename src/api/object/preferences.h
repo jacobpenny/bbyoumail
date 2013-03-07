@@ -8,8 +8,8 @@
 #ifndef PREFERENCES_H_
 #define PREFERENCES_H_
 
-#include "apiobject.h"
-#include "constants.h"
+#include "api/object/apiobject.h"
+#include "api/constants.h"
 
 namespace ymbb10 {
 namespace api {

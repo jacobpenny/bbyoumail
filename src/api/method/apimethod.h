@@ -8,7 +8,8 @@
 #ifndef APIMETHOD_H_
 #define APIMETHOD_H_
 
-#include "apiobject.h"
+
+#include "api/object/apiobject.h"
 
 using ymbb10::api::object::ApiObject;
 

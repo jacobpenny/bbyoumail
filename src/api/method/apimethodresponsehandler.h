@@ -8,7 +8,7 @@
 #ifndef APIMETHODRESPONSEHANDLER_H_
 #define APIMETHODRESPONSEHANDLER_H_
 
-
+/*
 #include "apimethodvisitor.h"
 
 namespace ymbb10 {
@@ -51,5 +51,6 @@ public:
 }
 }
 
+*/
 
 #endif /* APIMETHODRESPONSEHANDLER_H_ */

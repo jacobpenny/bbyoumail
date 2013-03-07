@@ -8,10 +8,10 @@
 #ifndef SETTINGS_H_
 #define SETTINGS_H_
 
-#include "apiobject.h"
-#include "transcriptionsettings.h"
-#include "alertsettings.h"
-#include "constants.h"
+#include "api/object/apiobject.h"
+#include "api/object/transcriptionsettings.h"
+#include "api/object/alertsettings.h"
+#include "api/constants.h"
 
 namespace ymbb10 {
 namespace api {

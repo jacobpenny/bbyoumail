@@ -46,10 +46,10 @@ public slots:
     void responseMessage(QString message) {
     	qDebug() << message;
     }
-
-private:
-    void showAuthFailedToast();
     void handleLoginButtonClicked();
+private:
+  //  void showAuthFailedToast();
+
 
 private:
     bb::cascades::Sheet *loginSheet_;

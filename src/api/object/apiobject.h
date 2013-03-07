@@ -12,7 +12,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
-#include "apiobjectvisitor.h"
+#include "api/object/apiobjectvisitor.h"
 
 namespace ymbb10 {
 namespace api {

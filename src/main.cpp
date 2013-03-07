@@ -1,18 +1,15 @@
-#include "YouMailBB10.hpp"
-
+// Default empty project template
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
 
 #include <QLocale>
 #include <QTranslator>
-#define QT_DECLARATIVE_DEBUG
 #include <Qt/qdeclarativedebug.h>
-
-#include "apiclient.h"
-
+#include "YouMailBB10.hpp"
 
 using namespace bb::cascades;
+
 
 void myMessageOutput(QtMsgType type, const char* msg){
                 fprintf(stdout, "%s\n", msg);
@@ -32,7 +29,6 @@ Q_DECL_EXPORT int main(int argc, char **argv)
         app.installTranslator( &translator );
     }
 
-    // create the application pane object to init UI etc.
     new YouMailBB10(&app);
 
     // we complete the transaction started in the app constructor and start the client event loop here

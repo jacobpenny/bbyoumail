@@ -8,19 +8,19 @@
 #ifndef APIOBJECTDESERIALIZER_H_
 #define APIOBJECTDESERIALIZER_H_
 
-#include "apiobject.h"
-#include "apiobjectvisitor.h"
-#include "authtoken.h"
-#include "transcriptionsettings.h"
-#include "alertsettings.h"
-#include "pushregistration.h"
-#include "settings.h"
-#include "messageboxfolder.h"
-#include "messageboxentry.h"
-#include "preferences.h"
-#include "response.h"
-#include "util/util.h"
-#include "constants.h"
+#include "api/object/apiobject.h"
+#include "api/object/apiobjectvisitor.h"
+#include "api/object/authtoken.h"
+#include "api/object/transcriptionsettings.h"
+#include "api/object/alertsettings.h"
+#include "api/object/pushregistration.h"
+#include "api/object/settings.h"
+#include "api/object/messageboxfolder.h"
+#include "api/object/messageboxentry.h"
+#include "api/object/preferences.h"
+#include "api/object/response.h"
+#include "api/util/util.h"
+#include "api/constants.h"
 
 #include <QXmlParseException>
 #include <QXmlStreamReader>

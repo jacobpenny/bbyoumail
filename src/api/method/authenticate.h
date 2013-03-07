@@ -8,8 +8,8 @@
 #ifndef AUTHENTICATE_H_
 #define AUTHENTICATE_H_
 
-#include "apiobject.h"
-#include "authtoken.h"
+#include "api/object/apiobject.h"
+#include "api/object/authtoken.h"
 
 namespace ymbb10 {
 namespace api {

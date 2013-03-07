@@ -8,6 +8,8 @@
 #ifndef APIMETHODVISITOR_H_
 #define APIMETHODVISITOR_H_
 
+#include <QObject>
+
 namespace ymbb10 {
 namespace api {
 namespace method {

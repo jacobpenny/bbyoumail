@@ -8,9 +8,9 @@
 #ifndef RESPONSE_H_
 #define RESPONSE_H_
 
-#include "apiobject.h"
-#include "apiobjectvisitor.h"
-#include "constants.h"
+#include "api/object/apiobject.h"
+#include "api/object/apiobjectvisitor.h"
+#include "api/constants.h"
 
 // debug
 #include "messageboxentry.h"

@@ -8,12 +8,12 @@
 
 #include <QtDebug>
 
-#include "apimethodresponsehandler.h"
+#include "api/method/apimethodresponsehandler.h"
 
 
 
 using ymbb10::api::method::Authenticate;
-using ymbb10::api::method::ApiMethodResponseHandler;
+//using ymbb10::api::method::ApiMethodResponseHandler;
 using ymbb10::api::object::AuthToken;
 
 using namespace bb::cascades;
@@ -27,6 +27,7 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 
 	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app, this);
+	/*
 	ApiMethodResponseHandler responseHandler; // should this be heap?
 
 	connect(&responseHandler, SIGNAL(responseProcessed(QString)),
@@ -36,6 +37,7 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 	pResponseHandlerThread_ = new QThread;
 	responseHandler.moveToThread(pResponseHandlerThread_);
+	*/
 
 	bool loggedIn = false; // place holder
 	if (!loggedIn) {
@@ -73,12 +75,14 @@ void YouMailBB10::handleLoginButtonClicked()
 		// store auth token
 		loginSheet_->close();
 	} else {
-		showAuthFailedToast();
+		//showAuthFailedToast();
 	}
 }
 
+/*
 void YouMailBB10::showAuthFailedToast() {
     SystemToast *toast = new SystemToast(this); // leak?
     toast->setBody("Authentication failed, please try again.");
     toast->show();
 }
+*/
