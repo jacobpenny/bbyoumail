@@ -8,9 +8,12 @@
 
 #include <QtDebug>
 
+#include "apimethodresponsehandler.h"
 
-//using ymbb10::api::ApiClient;
+
+
 using ymbb10::api::method::Authenticate;
+using ymbb10::api::method::ApiMethodResponseHandler;
 using ymbb10::api::object::AuthToken;
 
 using namespace bb::cascades;
@@ -19,15 +22,20 @@ using namespace bb::system;
 
 YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 {
-	// create scene document from main.qml asset
-	// set parent to created document to ensure it exists for the whole application lifetime
 	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
-
-	// create root object for the UI
 	AbstractPane *root = qml->createRootObject<AbstractPane>();
 
-	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app);
 
+	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app, this);
+	ApiMethodResponseHandler responseHandler; // should this be heap?
+
+	connect(&responseHandler, SIGNAL(responseProcessed(QString)),
+			this, SLOT(responseMessage(QString)));
+	connect(apiClient_, SIGNAL(responseDeserialized(QSharedPointer<ApiMethodBase>)),
+			&responseHandler, SLOT(handleResponse(QSharedPointer<ApiMethodBase>)));
+
+	pResponseHandlerThread_ = new QThread;
+	responseHandler.moveToThread(pResponseHandlerThread_);
 
 	bool loggedIn = false; // place holder
 	if (!loggedIn) {
@@ -41,9 +49,9 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 		Q_ASSERT(res);
 	}
 
-	// set created root object as a scene
 	app->setScene(root);
 }
+
 
 
 void YouMailBB10::handleLoginButtonClicked()

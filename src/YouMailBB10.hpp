@@ -23,6 +23,7 @@
 
 #include "api/client/apiclient.h"
 
+
 namespace bb { namespace cascades { class Application; }}
 
 /*!
@@ -30,6 +31,8 @@ namespace bb { namespace cascades { class Application; }}
  *
  *Use this object to create and init app UI, to create context objects, to register the new meta types etc.
  */
+using ymbb10::api::ApiClient;
+
 class YouMailBB10 : public QObject
 {
 Q_OBJECT
@@ -38,17 +41,21 @@ public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
 
+
 public slots:
-    void handleLoginButtonClicked();
+    void responseMessage(QString message) {
+    	qDebug() << message;
+    }
 
 private:
     void showAuthFailedToast();
+    void handleLoginButtonClicked();
 
 private:
     bb::cascades::Sheet *loginSheet_;
-    QNetworkAccessManager* mNetworkAccessManager;
-    ymbb10::api::ApiClient* apiClient_;
-
+    //QNetworkAccessManager* mNetworkAccessManager;
+    ApiClient* apiClient_;
+    QThread* pResponseHandlerThread_;
 };
 
 

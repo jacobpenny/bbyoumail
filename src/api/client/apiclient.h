@@ -58,7 +58,7 @@ private:
 	typedef QHash<QNetworkReply*, QSharedPointer<ApiMethodBase> > RequestHash;
 
 public:
-	ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app);
+	ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app, QObject* parent);
 
 public:
 	QString getApiRoot() const { return apiRoot_; }
@@ -73,7 +73,8 @@ public:
 
 	void execute(QSharedPointer<ApiMethodBase> method);
 
-
+signals:
+	void responseDeserialized(QSharedPointer<ApiMethodBase> method);
 
 private:
 	void logOutgoingRequest(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply);
@@ -87,7 +88,6 @@ private:
 	QString getScheme(QSharedPointer<ApiMethodBase> method) const;
 
 private:
-	// QScopedPointer<QNetworkAccessManager> pNetworkAccessManager_;
 	QNetworkAccessManager* pNetworkAccessManager_;
 
 	RequestHash requests_;
@@ -98,6 +98,10 @@ private:
 	QString authToken_;
 	ApiObjectSerializerFactory objectSerializerFactory_;
 	ApiObjectDeserializerFactory objectDeserializerFactory_;
+
+	QObject* pParent_;
+
+
 
 };
 

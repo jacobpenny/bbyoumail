@@ -9,6 +9,7 @@
 #include <QUrl>
 
 #include "api/method/authenticate.h"
+#include "api/method/apimethodresponsehandler.h"
 #include "api/object/apiobjectserializer.h"
 #include "api/object/apiobjectdeserializer.h"
 
@@ -25,8 +26,8 @@ using ymbb10::api::object::ApiObjectDeserializer;
 namespace ymbb10 {
 namespace api {
 
-ApiClient::ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app)
-	: apiRoot_(apiRoot), userAgent_(userAgent), QObject(app) {
+ApiClient::ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app, QObject *parent)
+	: apiRoot_(apiRoot), userAgent_(userAgent), QObject(app), pParent_(parent) {
 
 	pNetworkAccessManager_ = new QNetworkAccessManager(this);
 	bool success = QObject::connect(pNetworkAccessManager_, SIGNAL(finished(QNetworkReply*)),
@@ -150,9 +151,17 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 }
 
 void ApiClient::notifyOnResponse(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject) {
+	// TODO attach ApiObject to method
 
-	// TODO: Use another visitor here for the callbacks?
+	emit responseDeserialized(method);
 
+	/*
+	if (statusCode == 200) {
+		method.data()->accept(pApiMethodResponseHandler_);
+	} else {
+		method.data()->accept(pApiMethodErrorHandler_);
+	}
+	*/
 }
 
 QString ApiClient::getVersionPathSegment(QSharedPointer<ApiMethodBase> method) {

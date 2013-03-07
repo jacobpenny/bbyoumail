@@ -33,8 +33,6 @@ namespace api {
 namespace object {
 
 
-
-
 class ApiObjectDeserializer : public ApiObjectVisitor {
 private:
 	QByteArray* inBuffer_;

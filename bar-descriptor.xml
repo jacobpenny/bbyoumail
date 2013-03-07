@@ -64,6 +64,19 @@
     
     <!--  The category where the application appears. Either core.games or core.media. -->
     <category>core.games</category>
+    <configuration name="Device-Debug">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7-g/YouMailBB10" entry="true" type="Qnx/Elf">YouMailBB10</asset>
+    </configuration>
+    <configuration name="Device-Release">
+       <entryPointType>Qnx/Cascades</entryPointType>
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm/o.le-v7/YouMailBB10.so" entry="true" type="Qnx/Elf">YouMailBB10.so</asset>
+    </configuration>
+    <configuration name="Device-Profile">
+       <platformArchitecture>armle-v7</platformArchitecture>
+       <asset path="arm-p/o.le-v7-g/YouMailBB10" entry="true" type="Qnx/Elf">YouMailBB10</asset>
+    </configuration>
     <configuration name="Simulator-Debug">
        <platformArchitecture>x86</platformArchitecture>
        <asset path="x86/o-g/YouMailBB10" entry="true" type="Qnx/Elf">YouMailBB10</asset>
