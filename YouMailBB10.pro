@@ -1,7 +1,6 @@
 APP_NAME = YouMailBB10
-
-CONFIG += qt warn_on cascades10
+QT += network
+QT += core
 LIBS += -lbbsystem
-QT += core xml sql network
-
+CONFIG += qt warn_on cascades10
 include(config.pri)

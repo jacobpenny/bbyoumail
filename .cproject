@@ -22,28 +22,21 @@
 							<option id="com.qnx.qcc.option.compiler.172839542" name="Compiler:" superClass="com.qnx.qcc.option.compiler"/>
 							<option id="com.qnx.qcc.option.runtime.2120706357" name="Runtime:" superClass="com.qnx.qcc.option.runtime"/>
 							<targetPlatform archList="all" binaryParser="com.qnx.tools.ide.qde.core.QDEBynaryParser" id="com.qnx.qcc.targetPlatform.1114809207" osList="all" superClass="com.qnx.qcc.targetPlatform"/>
-							<builder autoBuildTarget="Simulator-Debug" buildPath="${workspace_loc:/YouMailBB10/Simulator-Debug}" enableAutoBuild="true" id="com.qnx.qcc.toolChain.419918799.908992782" incrementalBuildTarget="Simulator-Debug" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" stopOnErr="false" superClass="org.eclipse.cdt.build.core.settings.default.builder">
+							<builder autoBuildTarget="all" buildPath="${workspace_loc:/YouMailBB10}" cleanBuildTarget="clean" enableAutoBuild="false" enableCleanBuild="true" enabledIncrementalBuild="true" id="com.qnx.qcc.toolChain.419918799.908992782" incrementalBuildTarget="all" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" parallelizationNumber="1" stopOnErr="false" superClass="org.eclipse.cdt.build.core.settings.default.builder">
 								<outputEntries>
-									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
 									<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="outputPath" name=""/>
 								</outputEntries>
 							</builder>
 							<tool id="com.qnx.qcc.tool.compiler.1197827835" name="QCC Compiler" superClass="com.qnx.qcc.tool.compiler">
 								<option id="com.qnx.qcc.option.compiler.optlevel.1879120644" name="Optimization Level" superClass="com.qnx.qcc.option.compiler.optlevel" value="com.qnx.qcc.option.compiler.optlevel.0" valueType="enumerated"/>
-								<option id="com.qnx.qcc.option.compiler.includePath.178898574" name="Include Directories (-I)" superClass="com.qnx.qcc.option.compiler.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtNetwork"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtSql"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtXml"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtCore"/>
+								<option id="com.qnx.qcc.option.compiler.includePath.1954775602" name="Include Directories (-I)" superClass="com.qnx.qcc.option.compiler.includePath" valueType="includePath">
+									<listOptionValue builtIn="false" value="${QNX_TARGET}/usr/include/qt4/QtNetwork"/>
 								</option>
 								<inputType id="com.qnx.qcc.inputType.compiler.2057901968" superClass="com.qnx.qcc.inputType.compiler"/>
 							</tool>
 							<tool id="com.qnx.qcc.tool.assembler.2057034818" name="QCC Assembler" superClass="com.qnx.qcc.tool.assembler">
-								<option id="com.qnx.qcc.option.assembler.includePath.805888280" name="Include Directories (-I)" superClass="com.qnx.qcc.option.assembler.includePath" valueType="includePath">
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtNetwork"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtSql"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtXml"/>
-									<listOptionValue builtIn="false" value="C:/Users/Funbag/bb10ndk/target_10_0_9_1673/qnx6/usr/include/qt4/QtCore"/>
+								<option id="com.qnx.qcc.option.assembler.includePath.856738121" name="Include Directories (-I)" superClass="com.qnx.qcc.option.assembler.includePath" valueType="includePath">
+									<listOptionValue builtIn="false" value="&quot;C:\Users\Funbag\bb10ndk\target_10_0_9_1673\qnx6\usr\include\qt4\QtNetwork&quot;"/>
 								</option>
 								<inputType id="com.qnx.qcc.inputType.assembler.1663373832" superClass="com.qnx.qcc.inputType.assembler"/>
 							</tool>
@@ -59,7 +52,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
+						<entry flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
