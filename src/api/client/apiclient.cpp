@@ -2,7 +2,7 @@
  * apiclient.cpp
  *
  *  Created on: 2013-02-27
- *      Author: jpenny
+ *      Author: ebrooks
  */
 #include "apiclient.h"
 
@@ -14,6 +14,7 @@
 #include "api/object/apiobjectdeserializer.h"
 
 using ymbb10::api::method::ApiMethod;
+using ymbb10::api::method::HttpVerb;
 using ymbb10::api::method::ApiMethodBase;
 using ymbb10::api::method::Authenticate;
 using ymbb10::api::object::ApiObject;
@@ -22,6 +23,7 @@ using ymbb10::api::object::ApiObjectVisitor;
 using ymbb10::api::object::ApiObjectVisitorFactory;
 using ymbb10::api::object::ApiObjectSerializer;
 using ymbb10::api::object::ApiObjectDeserializer;
+
 
 namespace ymbb10 {
 namespace api {
@@ -152,12 +154,13 @@ void ApiClient::onResponse(QNetworkReply* pReply) {
 
 void ApiClient::notifyOnResponse(QSharedPointer<ApiMethodBase> method, QNetworkReply* pReply, int statusCode, QSharedPointer<ApiObject> pApiObject) {
 	// TODO attach ApiObject to method
-	qDebug() << "entering notifyOnResponse()";
+
+
 
 	if (statusCode == 200) {
 		emit responseDeserialized(method.data());
 	} else {
-		// emit errorDeserialized(method.data());
+		//emit errorDeserialized(method.data());
 	}
 
 }
@@ -194,7 +197,6 @@ QString ApiClient::getScheme(QSharedPointer<ApiMethodBase> method) const {
 
 	return "http"; // default
 }
-
 
 };
 };

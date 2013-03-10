@@ -10,25 +10,22 @@
 
 #include "api/object/apiobject.h"
 #include "api/object/authtoken.h"
-#include "api/method/apimethod.h"
-#include "api/method/apimethodvisitor.h"
-
 
 namespace ymbb10 {
 namespace api {
 namespace method {
 
-class Authenticate : public GetApiMethod<object::AuthToken> {
+class Authenticate : public GetApiMethod<object::AuthToken>{
 public:
 	Authenticate(const QString& uname, const QString& pin) : uname_(uname), pin_(pin) {};
-
-	virtual void accept(ApiMethodVisitor* pVisitor) { pVisitor->visit(this); }
 
 	virtual ApiVersion getVersion() const { return VERSION_3; }
 	virtual HttpVerb getHttpVerb() const { return HTTP_GET; }
 	virtual QString getPath() const {
 		return "authenticate/" + uname_ + ":" + pin_;
 	}
+
+	virtual void accept(ApiMethodVisitor* pVisitor) { pVisitor->visit(this); }
 
 private:
 	QString uname_;

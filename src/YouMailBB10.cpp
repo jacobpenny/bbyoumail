@@ -1,6 +1,8 @@
 // Tabbed pane project template
 #include "YouMailBB10.hpp"
-
+#include "api/method/apimethod.h"
+#include "api/method/apimethodresponsehandler.h"
+#include "api/method/authenticate.h"
 
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
@@ -8,16 +10,17 @@
 
 #include <QtDebug>
 
-#include "api/method/apimethodresponsehandler.h"
-
 
 
 using ymbb10::api::method::Authenticate;
+//using ymbb10::api::method::ResponseMessage;
+using ymbb10::api::method::ApiMethodBase;
 using ymbb10::api::method::ApiMethodResponseHandler;
-using ymbb10::api::object::AuthToken;
+
 
 using namespace bb::cascades;
 using namespace bb::system;
+
 
 
 YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
@@ -30,12 +33,15 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 	ApiMethodResponseHandler* responseHandler = new ApiMethodResponseHandler; // should this be heap?
 
+	// declare our enum so it works with slots
 
-	bool r1 = QObject::connect(responseHandler, SIGNAL(responseProcessed(QString)),
-			this, SLOT(responseMessage(QString)));
+    qRegisterMetaType<ymbb10::api::method::ResponseMessage>("ymbb10::api::method::ResponseMessage");
 
-	bool r2 = QObject::connect(apiClient_, SIGNAL(responseDeserialized(ApiMethodBase*)),
-			responseHandler, SLOT(handleResponse(ApiMethodBase*)));
+	bool r1 = QObject::connect(responseHandler, SIGNAL(responseProcessed(ymbb10::api::method::ResponseMessage)),
+			this, SLOT(responseMessage(ymbb10::api::method::ResponseMessage)));
+
+	bool r2 = QObject::connect(apiClient_, SIGNAL(responseDeserialized(ymbb10::api::method::ApiMethodBase*)),
+			responseHandler, SLOT(handleResponse(ymbb10::api::method::ApiMethodBase*)));
 
 
 	Q_ASSERT(r1);
@@ -83,23 +89,18 @@ void YouMailBB10::handleLoginButtonClicked()
 		loginSheet_->close();
 	} else {
 		//showAuthFailedToast();
+		 *
 	}
 	*/
 }
 
-void YouMailBB10::responseMessage(QString message) {
+void YouMailBB10::responseMessage(ymbb10::api::method::ResponseMessage message) {
 	qDebug() << message;
-	if (message == "AUTH_SUCCESS") {
+	if (message == ymbb10::api::method::AUTH_SUCCESS) {
 		loginSheet_->close();
-	} else if (message == "AUTH_FAILED") {
-		showAuthFailedToast();
 	}
 }
 
-void YouMailBB10::testSlot(ApiMethodBase*)
-{
-	qDebug() << "testSlot";
-}
 
 
 void YouMailBB10::showAuthFailedToast() {

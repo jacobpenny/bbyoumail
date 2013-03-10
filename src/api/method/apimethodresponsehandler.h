@@ -8,33 +8,45 @@
 #ifndef APIMETHODRESPONSEHANDLER_H_
 #define APIMETHODRESPONSEHANDLER_H_
 
-#include <QSharedPointer>
-#include <QtDebug>
-
 #include "api/method/apimethod.h"
 #include "api/method/apimethodvisitor.h"
+
+
 
 namespace ymbb10 {
 namespace api {
 namespace method {
 
+class ApiMethodBase;
+
+enum ResponseMessage {
+	AUTH_SUCCESS = 0,
+	AUTH_FAILURE = 1
+};
+
 
 class ApiMethodResponseHandler : public ApiMethodVisitor {
-Q_OBJECT
+	Q_OBJECT
+public slots:
+	void handleResponse(ymbb10::api::method::ApiMethodBase* pMeth) {
+		pMeth->accept(this);
+	}
 
 signals:
-	void responseProcessed(QString message);
+	void responseProcessed(ymbb10::api::method::ResponseMessage message);
 
-public slots:
-	void testSlot(ApiMethodBase*);
-
-	void handleResponse(ApiMethodBase*);
 public:
 	ApiMethodResponseHandler() {}
 	virtual ~ApiMethodResponseHandler() {}
 
 	virtual void visit(AddFolder* pMeth) {}
-	virtual void visit(Authenticate* pMeth);
+	virtual void visit(Authenticate* pMeth) {
+		// Store the auth token
+
+
+		// Emit an auth success signal (to alert the login screen)
+		emit responseProcessed(AUTH_SUCCESS);
+	}
 	virtual void visit(DeleteFolder* pMeth) {}
 	virtual void visit(GetAccessPoint* pMeth) {}
 	virtual void visit(GetFolders* pMeth) {}
@@ -42,16 +54,12 @@ public:
 	virtual void visit(GetPreferences* pMeth) {}
 	virtual void visit(GetSettings* pMeth) {}
 
+
+
 };
 
 
 
-/*
-inline void ApiMethodResponseHandler::handleResponse(ApiMethodBase* pMethod) {
-	qDebug() << "METHOD HANDLER SLOT CALLED";
-	emit responseProcessed(QString("AUTH_SUCCESS"));
-}
-*/
 }
 }
 }

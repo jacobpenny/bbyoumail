@@ -22,7 +22,8 @@
 #include <QNetworkReply>
 
 #include "api/client/apiclient.h"
-
+#include "api/method/apimethod.h"
+#include "api/method/apimethodresponsehandler.h"
 
 namespace bb { namespace cascades { class Application; }}
 
@@ -33,19 +34,20 @@ namespace bb { namespace cascades { class Application; }}
  */
 using ymbb10::api::ApiClient;
 
+
 class YouMailBB10 : public QObject
 {
 Q_OBJECT
 
+public slots:
+    void responseMessage(ymbb10::api::method::ResponseMessage message);
+    void handleLoginButtonClicked();
 public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
 
 
-public slots:
-    void responseMessage(QString message);
-    void handleLoginButtonClicked();
-    void testSlot(ApiMethodBase*);
+
 private:
     void showAuthFailedToast();
 

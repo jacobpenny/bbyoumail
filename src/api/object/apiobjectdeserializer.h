@@ -39,7 +39,9 @@ private:
 	QXmlStreamReader reader_;
 
 public:
-	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(*inBuffer_) {};
+	ApiObjectDeserializer(QByteArray* inBuffer) : inBuffer_(inBuffer), reader_(*inBuffer_) {
+		reader_.readNextStartElement(); // Skip the start document tag
+	};
 
 public:
 	virtual ~ApiObjectDeserializer() { delete inBuffer_; }
@@ -70,12 +72,8 @@ public:
 
 	virtual void visit(AuthToken* pObj) {
 		Q_ASSERT(NULL != pObj);
-
-		reader_.readNext();
-		reader_.readNext();
 		validateInput(pObj->getName());
-		reader_.readNext();
-		pObj->setAuthToken(reader_.text().toString());
+		pObj->setAuthToken(reader_.readElementText());
 		qDebug() << pObj->getAuthToken();
 	}
 

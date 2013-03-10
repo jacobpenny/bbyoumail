@@ -24,7 +24,6 @@ class GetPreferences;
 class GetSettings;
 
 class ApiMethodVisitor : public QObject {
-Q_OBJECT
 public:
 	virtual ~ApiMethodVisitor() = 0;
 	virtual void visit(AddFolder*) = 0;
