@@ -38,7 +38,7 @@ private:
 	typedef QHash<QNetworkReply*, QSharedPointer<method::ApiMethodBase> > RequestHash;
 
 public:
-	ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app, QObject* parent);
+	ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app);
 
 public:
 	QString getApiRoot() const { return apiRoot_; }
@@ -78,10 +78,6 @@ private:
 	QString authToken_;
 	object::ApiObjectSerializerFactory objectSerializerFactory_;
 	object::ApiObjectDeserializerFactory objectDeserializerFactory_;
-
-	QObject* pParent_;
-
-
 
 };
 

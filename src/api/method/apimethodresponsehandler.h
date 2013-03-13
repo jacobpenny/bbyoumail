@@ -8,10 +8,14 @@
 #ifndef APIMETHODRESPONSEHANDLER_H_
 #define APIMETHODRESPONSEHANDLER_H_
 
+#include "api/object/apiobject.h"
+#include "api/object/authtoken.h"
 #include "api/method/apimethod.h"
 #include "api/method/apimethodvisitor.h"
+#include "api/method/authenticate.h"
 
-
+#include <QSharedPointer>
+#include <QSettings>
 
 namespace ymbb10 {
 namespace api {
@@ -41,8 +45,11 @@ public:
 
 	virtual void visit(AddFolder* pMeth) {}
 	virtual void visit(Authenticate* pMeth) {
+		ymbb10::api::object::AuthToken* authToken = (ymbb10::api::object::AuthToken*)pMeth->getResponseObject().data();
 		// Store the auth token
-
+		QSettings loginSettings("ejsoft", "bbyoumail");
+		loginSettings.setValue("authtoken", authToken->getAuthToken());
+		loginSettings.sync();
 
 		// Emit an auth success signal (to alert the login screen)
 		emit responseProcessed(AUTH_SUCCESS);
@@ -53,9 +60,6 @@ public:
 	virtual void visit(GetMessages* pMeth) {}
 	virtual void visit(GetPreferences* pMeth) {}
 	virtual void visit(GetSettings* pMeth) {}
-
-
-
 };
 
 

@@ -21,29 +21,33 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 	AbstractPane *root = qml->createRootObject<AbstractPane>();
 
-	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app, this);
+	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app);
+	responseHandler_ = new ApiMethodResponseHandler;
 
-	ApiMethodResponseHandler* responseHandler = new ApiMethodResponseHandler; // should this be heap?
-
-	// Declare our enum so it works with slots
+	// Register our enum so it works with slots
     qRegisterMetaType<ymbb10::api::method::ResponseMessage>("ymbb10::api::method::ResponseMessage");
 
-	bool r1 = QObject::connect(responseHandler, SIGNAL(responseProcessed(ymbb10::api::method::ResponseMessage)),
+	bool r1 = QObject::connect(responseHandler_, SIGNAL(responseProcessed(ymbb10::api::method::ResponseMessage)),
 			this, SLOT(responseMessage(ymbb10::api::method::ResponseMessage)));
 
 	bool r2 = QObject::connect(apiClient_, SIGNAL(responseDeserialized(ymbb10::api::method::ApiMethodBase*)),
-			responseHandler, SLOT(handleResponse(ymbb10::api::method::ApiMethodBase*)));
+			responseHandler_, SLOT(handleResponse(ymbb10::api::method::ApiMethodBase*)));
 
 	Q_ASSERT(r1);
 	Q_ASSERT(r2);
 
 	pResponseHandlerThread_ = new QThread;
-	responseHandler->moveToThread(pResponseHandlerThread_);
-
+	responseHandler_->moveToThread(pResponseHandlerThread_);
 	pResponseHandlerThread_->start();
 
-	bool loggedIn = false; // place holder
-	if (!loggedIn) {
+	onStart();
+
+	app->setScene(root);
+}
+
+void YouMailBB10::onStart()
+{
+	if (!haveCredentials()) {
 		QmlDocument *sheetQml = QmlDocument::create("asset:///Loginsheet.qml").parent(this);
 		loginSheet_ = sheetQml->createRootObject<Sheet>();
 		loginSheet_->open();
@@ -52,9 +56,17 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 		bool res = QObject::connect(loginButton, SIGNAL(clicked()), this,
 		                            SLOT(handleLoginButtonClicked()));
 		Q_ASSERT(res);
+	} else {
+		// have credentials, make some api calls
 	}
+}
 
-	app->setScene(root);
+bool YouMailBB10::haveCredentials() {
+	QSettings loginSettings("ejsoft", "bbyoumail");
+	qDebug() << "Stored phone number: " << loginSettings.value("userphone").toString();
+	qDebug() << "Stored pin: " << loginSettings.value("userpin").toString();
+	qDebug() << "Auth token: " << loginSettings.value("authtoken").toString();
+	return loginSettings.contains("userphone") && loginSettings.contains("userpin");
 }
 
 void YouMailBB10::handleLoginButtonClicked()
@@ -67,12 +79,26 @@ void YouMailBB10::handleLoginButtonClicked()
 
 	QSharedPointer<ApiMethodBase> authCall(new Authenticate(userPhone.toString(), userPin.toString()));
 	apiClient_->execute(authCall);
+
+	// Store phone/pin
+	QSettings loginSettings("ejsoft", "bbyoumail");
+	loginSettings.setValue("userphone", userPhone.toString());
+	loginSettings.setValue("userpin", userPin.toString());
+	loginSettings.sync();
 }
 
 void YouMailBB10::responseMessage(ymbb10::api::method::ResponseMessage message) {
-	qDebug() << message;
-	if (message == ymbb10::api::method::AUTH_SUCCESS) {
-		loginSheet_->close();
+	qDebug() << "Main thread received message code: " << message;
+	switch (message) {
+
+	case ymbb10::api::method::AUTH_SUCCESS :
+		if (loginSheet_->isOpened()) {
+			loginSheet_->close();
+			// make some requests for messages here?
+		} else {
+
+		}
+		break;
 	}
 }
 

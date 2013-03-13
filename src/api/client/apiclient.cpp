@@ -28,8 +28,8 @@ using ymbb10::api::object::ApiObjectDeserializer;
 namespace ymbb10 {
 namespace api {
 
-ApiClient::ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app, QObject *parent)
-	: apiRoot_(apiRoot), userAgent_(userAgent), QObject(app), pParent_(parent) {
+ApiClient::ApiClient(QString apiRoot, QString userAgent, bb::cascades::Application *app)
+	: apiRoot_(apiRoot), userAgent_(userAgent), QObject(app) {
 
 	pNetworkAccessManager_ = new QNetworkAccessManager(this);
 	bool success = QObject::connect(pNetworkAccessManager_, SIGNAL(finished(QNetworkReply*)),

@@ -20,6 +20,7 @@
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QSettings>
 
 #include "api/client/apiclient.h"
 #include "api/method/apimethod.h"
@@ -46,17 +47,16 @@ public:
     YouMailBB10(bb::cascades::Application *app);
     virtual ~YouMailBB10() {}
 
-
-
 private:
     void showAuthFailedToast();
-
+    bool haveCredentials();
+    void onStart();
 
 private:
     bb::cascades::Sheet *loginSheet_;
-    //QNetworkAccessManager* mNetworkAccessManager;
     ApiClient* apiClient_;
     QThread* pResponseHandlerThread_;
+    ymbb10::api::method::ApiMethodResponseHandler* responseHandler_;
 };
 
 
