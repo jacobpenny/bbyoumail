@@ -18,6 +18,8 @@
 #include "api/object/apiobject.h"
 #include "api/object/apiobjectvisitorfactory.h"
 
+#include "storage/sqlstorage.h"
+
 class QNetworkReply;
 
 namespace ymbb10 {

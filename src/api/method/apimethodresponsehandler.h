@@ -47,7 +47,7 @@ public:
 	virtual void visit(Authenticate* pMeth) {
 		ymbb10::api::object::AuthToken* authToken = (ymbb10::api::object::AuthToken*)pMeth->getResponseObject().data();
 		// Store the auth token
-		QSettings loginSettings("ejsoft", "bbyoumail");
+		QSettings loginSettings;
 		loginSettings.setValue("authtoken", authToken->getAuthToken());
 		loginSettings.sync();
 

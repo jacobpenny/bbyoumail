@@ -3,6 +3,7 @@
 #include "api/method/apimethodresponsehandler.h"
 #include "api/method/authenticate.h"
 
+
 #include <bb/cascades/Application>
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/AbstractPane>
@@ -16,10 +17,13 @@ using ymbb10::api::method::ApiMethodResponseHandler;
 using namespace bb::cascades;
 using namespace bb::system;
 
-YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
+YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app), sqlStorage_(QDir::currentPath() + "/app/native/assets/ymbb10.db")
 {
 	QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
 	AbstractPane *root = qml->createRootObject<AbstractPane>();
+
+	app->setOrganizationName("edgesoft");
+	app->setApplicationName("barnowl");
 
 	apiClient_ = new ymbb10::api::ApiClient("http://api.youmail.com/api", "youmailapp", app);
 	responseHandler_ = new ApiMethodResponseHandler;
@@ -40,13 +44,14 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 	responseHandler_->moveToThread(pResponseHandlerThread_);
 	pResponseHandlerThread_->start();
 
+	qDebug() << app->applicationVersion();
 	onStart();
-
 	app->setScene(root);
 }
 
 void YouMailBB10::onStart()
 {
+
 	if (!haveCredentials()) {
 		QmlDocument *sheetQml = QmlDocument::create("asset:///Loginsheet.qml").parent(this);
 		loginSheet_ = sheetQml->createRootObject<Sheet>();
@@ -62,7 +67,7 @@ void YouMailBB10::onStart()
 }
 
 bool YouMailBB10::haveCredentials() {
-	QSettings loginSettings("ejsoft", "bbyoumail");
+	QSettings loginSettings;
 	qDebug() << "Stored phone number: " << loginSettings.value("userphone").toString();
 	qDebug() << "Stored pin: " << loginSettings.value("userpin").toString();
 	qDebug() << "Auth token: " << loginSettings.value("authtoken").toString();
@@ -81,7 +86,7 @@ void YouMailBB10::handleLoginButtonClicked()
 	apiClient_->execute(authCall);
 
 	// Store phone/pin
-	QSettings loginSettings("ejsoft", "bbyoumail");
+	QSettings loginSettings;
 	loginSettings.setValue("userphone", userPhone.toString());
 	loginSettings.setValue("userpin", userPin.toString());
 	loginSettings.sync();

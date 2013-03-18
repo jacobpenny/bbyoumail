@@ -25,6 +25,7 @@
 #include "api/client/apiclient.h"
 #include "api/method/apimethod.h"
 #include "api/method/apimethodresponsehandler.h"
+#include "storage/sqlstorage.h"
 
 namespace bb { namespace cascades { class Application; }}
 
@@ -57,6 +58,7 @@ private:
     ApiClient* apiClient_;
     QThread* pResponseHandlerThread_;
     ymbb10::api::method::ApiMethodResponseHandler* responseHandler_;
+    const ymbb10::storage::SqlStorage sqlStorage_;
 };
 
 

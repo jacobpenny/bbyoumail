@@ -1,7 +1,8 @@
 APP_NAME = YouMailBB10
-
-QT += network xml core
 LIBS += -lbbsystem
+LIBS += -lbbdata
+QT += network xml core
+
 CONFIG += qt warn_on cascades10
 
 
