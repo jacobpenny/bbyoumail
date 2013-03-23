@@ -13,9 +13,11 @@
 #include "api/method/apimethod.h"
 #include "api/method/apimethodvisitor.h"
 #include "api/method/authenticate.h"
+#include "settings/appsettings.h"
 
 #include <QSharedPointer>
 #include <QSettings>
+#include <QTime>
 
 namespace ymbb10 {
 namespace api {
@@ -48,7 +50,7 @@ public:
 		ymbb10::api::object::AuthToken* authToken = (ymbb10::api::object::AuthToken*)pMeth->getResponseObject().data();
 		// Store the auth token
 		QSettings loginSettings;
-		loginSettings.setValue("authtoken", authToken->getAuthToken());
+		loginSettings.setValue(ymbb10::settings::AUTH_TOKEN, authToken->getAuthToken());
 		loginSettings.sync();
 
 		// Emit an auth success signal (to alert the login screen)
@@ -56,7 +58,11 @@ public:
 	}
 	virtual void visit(DeleteFolder* pMeth) {}
 	virtual void visit(GetAccessPoint* pMeth) {}
-	virtual void visit(GetFolders* pMeth) {}
+	virtual void visit(GetFolders* pMeth) {
+		QSettings settings;
+		settings.setValue(ymbb10::settings::LAST_FOLDER_REFRESH, QTime::currentTime());
+
+	}
 	virtual void visit(GetMessages* pMeth) {}
 	virtual void visit(GetPreferences* pMeth) {}
 	virtual void visit(GetSettings* pMeth) {}

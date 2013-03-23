@@ -52,13 +52,14 @@ private:
     void showAuthFailedToast();
     bool haveCredentials();
     void onStart();
+    void copyFileToDataFolder(const QString);
 
 private:
     bb::cascades::Sheet *loginSheet_;
     ApiClient* apiClient_;
     QThread* pResponseHandlerThread_;
     ymbb10::api::method::ApiMethodResponseHandler* responseHandler_;
-    const ymbb10::storage::SqlStorage sqlStorage_;
+    ymbb10::storage::SqlStorage* sqlStorage_;
 };
 
 

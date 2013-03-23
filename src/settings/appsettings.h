@@ -14,8 +14,8 @@ namespace ymbb10 {
 namespace settings {
 	const QString APP_VERSION = "APP_VERSION";
 	const QString PREV_APP_VERSION = "PREV_APP_VERSION";
-
-
+	const QString LAST_FOLDER_REFRESH = "LAST_FOLDER_REFRESH";
+	const QString AUTH_TOKEN = "AUTH_TOKEN";
 
 
 
