@@ -24,14 +24,14 @@ class ApiObjectVisitor;
 
 class Visitable {
 public:
-	virtual ~ApiObjectBase() = 0;
+	virtual ~Visitable() = 0;
 	virtual void accept(ApiObjectVisitor*) = 0;
 };
 
 class Transient {
 public:
-	virtual ~ApiObject() = 0;
-	virtual QList<String> getProjection() const = 0;
+	virtual ~Transient() = 0;
+	virtual QList<QString> getProjection() const = 0;
 	virtual const QVariantMap& getContentValues() const = 0;
 	virtual void create(const QVariantMap& contentValues) = 0;
 };

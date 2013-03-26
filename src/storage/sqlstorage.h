@@ -17,6 +17,7 @@
 #include <QString>
 
 
+
 namespace ymbb10 {
 namespace storage {
 
@@ -148,9 +149,12 @@ protected:
 		dataAccess_->execute("DROP TABLE images;");
 	}
 
+	bb::data::SqlDataAccess* getDataAccess() {
+		return dataAccess_;
+	}
 
 private:
-	bb::data::SqlDataAccess* dataAccess_; // make into scoped pointer, use reset()
+	bb::data::SqlDataAccess* dataAccess_; // make into scoped pointer? strong ref
 	QSettings settings_;
 	QString dbPath_;
 };

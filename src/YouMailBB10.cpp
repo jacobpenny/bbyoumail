@@ -68,7 +68,8 @@ YouMailBB10::YouMailBB10(bb::cascades::Application *app) : QObject(app)
 
 void YouMailBB10::onStart()
 {
-	sqlStorage_->onOpen(false);
+	// sqlStorage_->onOpen(false);
+	// Lets just create a sqlcontentprovider and let it set up sqlStorage
 
 	if (!haveCredentials()) {
 		QmlDocument *sheetQml = QmlDocument::create("asset:///Loginsheet.qml").parent(this);
