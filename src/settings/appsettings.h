@@ -22,6 +22,14 @@ namespace settings {
 }
 }
 
+namespace ymbb10 {
+namespace identifiers {
+	const QString FOLDER = "APP_VERSION";
+	const QString FOLDER_LIST = "PREV_APP_VERSION";
+
+
+}
+}
 
 
 

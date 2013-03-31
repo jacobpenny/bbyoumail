@@ -24,7 +24,7 @@ public:
 	QVariant query(QUrl url, const QString& whereClause, const QVariantList& whereArgs) {
 
 		QUuid type = getType(url);
-		QString tableName = getTableName(type);
+		QString tableName = typeToTableName_[type];
 
 		bb::data::SqlDataAccess* pDataAccess = sqlStorage_.getDataAccess();
 
@@ -56,19 +56,19 @@ public:
 		QString urlStr = url.toString();
 		QRegExp regexp;
 
-		regexp.setPattern("messages/\d+$"); // or  db://messages/\d+$     ?
+		regexp.setPattern("db://messages/\d+$"); // or  db://messages/\d+$     ?
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return MessageBoxEntry::UUID; }
 
-		regexp.setPattern("messages/?$");
+		regexp.setPattern("db://messages/?$");
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return ListApiObject<MessageBoxEntry>::UUID; }
 
-		regexp.setPattern("folders/\d+$");
+		regexp.setPattern("db://folders/\d+$");
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return MessageBoxFolder::UUID; }
 
-		regexp.setPattern("folders/?$");
+		regexp.setPattern("db://folders/?$");
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return ListApiObject<MessageBoxFolder>::UUID; }
 	}
@@ -91,10 +91,6 @@ private:
 	QString getTableName(QUuid type) {
 		long hashCode = hash(type);
 		return typeToTableName_[hashCode];
-	}
-
-	long hash(QUuid uuid) const {
-
 	}
 
 private:
