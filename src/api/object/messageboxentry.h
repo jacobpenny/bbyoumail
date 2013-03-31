@@ -25,13 +25,25 @@ public:
 		STATUS_ACK = 2
 	};
 	*/
+	static const QUuid UUID;
+public:
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
+
 public:
 	MessageBoxEntry();
 	virtual ~MessageBoxEntry();
 
 	static QString getName() { return "entry"; }
-
-	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 	millisecond_t getCreated() const { return created_;	}
 	void setCreated(millisecond_t created) { created_ = created; }
@@ -65,9 +77,11 @@ private:
 
 };
 
+
 } /* namespace object */
 } /* namespace api */
 } /* namespace ymbb10 */
+
 
 #endif /* MESSAGEBOXENTRY_H_ */
 

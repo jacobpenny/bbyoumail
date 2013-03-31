@@ -9,6 +9,8 @@
 #define PUSHREGISTRATION_H_
 
 #include "apiobject.h"
+#include "apiobjectvisitor.h"
+#include "constants.h"
 
 namespace ymbb10 {
 namespace api {
@@ -16,6 +18,8 @@ namespace object {
 
 class PushRegistration : public ApiObject {
 public:
+	static const QUuid UUID;
+
 	enum Status {
 		STATUS_ACTIVE = 1,
 		STATUS_ERROR = 9,
@@ -36,7 +40,25 @@ public:
 		CLIENT_TYPE_RESERVED2 = 7
 	};
 
+
+public:
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
+
+public:
 	PushRegistration() {}
+	virtual ~PushRegistration() {}
+
+	static QString getName() { return "pushRegistration"; }
 
 	ClientType getClientType() const {
 		return clientType_;
@@ -93,13 +115,6 @@ public:
 	void setVersion(unsigned long version) {
 		version_ = version;
 	}
-	static QString getName() { return "pushRegistration"; }
-
-	virtual ~PushRegistration() {}
-	virtual QString getContentType() const { return QString(""); } // TODO
-	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
-
-
 
 private:
 	ClientType clientType_;

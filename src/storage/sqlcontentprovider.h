@@ -28,16 +28,15 @@ public:
 
 		bb::data::SqlDataAccess* pDataAccess = sqlStorage_.getDataAccess();
 
-		switch(hash(type)) {
-		case MESSAGES:
+		if (MessageBoxEntry::UUID == type) {
 			QString q = "SELECT * from " + tableName;
 			if (whereClause) {
 				q += "WHERE " + parameterize(whereClause, whereArgs);
 			}
 			return pDataAccess->execute(q);
 			break;
-
 		}
+
 	}
 
 	void insert(QUrl url, const QVariantList& values) {
@@ -56,11 +55,11 @@ public:
 		QString urlStr = url.toString();
 		QRegExp regexp;
 
-		regexp.setPattern("db://messages/\d+$"); // or  db://messages/\d+$     ?
+		regexp.setPattern("db://messageboxentries/\d+$"); // or  db://messages/\d+$     ?
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return MessageBoxEntry::UUID; }
 
-		regexp.setPattern("db://messages/?$");
+		regexp.setPattern("db://messageboxentries/?$");
 		Q_ASSERT(regexp.isValid());
 		if (regexp.indexIn(urlStr) > 0) { return ListApiObject<MessageBoxEntry>::UUID; }
 

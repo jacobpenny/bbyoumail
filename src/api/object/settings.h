@@ -20,10 +20,26 @@ namespace object {
 
 class Settings : public ApiObject {
 public:
+	static const QUuid UUID;
+
+public:
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
+
+public:
 	static QString getName() { return "settings"; }
 
-	userid_t getUserId() const { return userId_; }
-	void setUserId(userid_t userId) { userId_ = userId; }
+	ymbb10::api::userid_t getUserId() const { return userId_; }
+	void setUserId(ymbb10::api::userid_t userId) { userId_ = userId; }
 
 	AlertSettings& getAlertSettings() { return alertSettings_; }
 	TranscriptionSettings& getTranscriptionSettings() { return transcriptionSettings_; }
@@ -37,7 +53,7 @@ public:
 private:
 	AlertSettings alertSettings_;
 	TranscriptionSettings transcriptionSettings_;
-	userid_t userId_;
+	ymbb10::api::userid_t userId_;
 };
 
 } /* namespace object */

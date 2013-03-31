@@ -17,12 +17,26 @@ namespace object {
 
 class MessageBoxFolder : public ApiObject {
 public:
+	static const QUuid UUID;
+
+public:
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
+
+public:
 	MessageBoxFolder();
 	~MessageBoxFolder();
 
 	static QString getName() { return "folder"; }
-
-	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
 	QString getDescription() const { return description_; }
 	void setDescription(QString description) { description_ = description; }

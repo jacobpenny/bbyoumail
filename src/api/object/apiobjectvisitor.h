@@ -14,6 +14,7 @@ namespace object {
 
 #include "apiobject.h"
 
+
 class AuthToken;
 class MessageBoxEntry;
 class MessageBoxFolder;
@@ -22,10 +23,11 @@ class AlertSettings;
 class Settings;
 class Error;
 class ListApiObjectBase;
-class PushRegistration;
 class Preferences;
 class NullApiObject;
 class ApiResponse;
+class Contact;
+class PushRegistration;
 
 class ApiObjectVisitor {
 public:
@@ -42,6 +44,7 @@ public:
 	virtual void visit(Error*) = 0;
 	virtual void visit(ListApiObjectBase*) = 0;
 	virtual void visit(ApiResponse*) = 0;
+	virtual void visit(Contact*) = 0;
 };
 
 inline ApiObjectVisitor::~ApiObjectVisitor() {}

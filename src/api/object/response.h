@@ -24,6 +24,8 @@ namespace object {
 
 class Error : public ApiObject {
 public:
+	static const QUuid UUID;
+
 	static const QString INVALID_USER;
 	static const QString TERMS_NOT_AGREED;
 	static const QString ACCOUNT_EXPIRED;
@@ -31,6 +33,18 @@ public:
 	static const QString SERVICE_UNAVAILABLE;
 	static const QString UNKNOWN;
 	static const QString INVALID_AUTH_TOKEN;
+
+public:
+	//Overrides
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
 
 public:
 	Error() {}
@@ -63,9 +77,7 @@ public:
 		shortMessage_ = shortMessage;
 	}
 
-	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
-	virtual QString getContentType() const { return QString("application/xml"); }
 
 private:
 	QString errorCode_;
@@ -76,68 +88,65 @@ private:
 
 class ApiResponse : public ApiObject {
 public:
-	virtual QString getName() const { return "response"; }
+	static const QUuid UUID;
+public:
+	//Overrides
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
 	virtual QString getContentType() const { return QString("application/xml"); }
+
+public:
+	virtual QString getName() const { return "response"; }
 
 	bool hasError() const
 	{
 		return !errors_.empty();
 	}
 
-	bool hasError(QString errorCode, Error* pReturnError = NULL) const {
-		for (int i = 0; i < errors_.size(); ++i) {
-			if (errors_.typedAt(i)->getErrorCode() == errorCode) {
-				if (NULL != pReturnError) *pReturnError = *(errors_.typedAt(i));
-				return true;
-			}
-		}
-		return false;
+	bool hasError(QString errorCode, Error* pReturnError) const;
+
+	Error getError(QString errorCode) const;
+
+	const ListApiObject<Error>& getErrors() const
+	{
+		return errors_;
+    }
+
+	ListApiObject<Error>& getErrors()
+	{
+		return errors_;
 	}
 
-	Error getError(QString errorCode) const {
-		for (int i = 0; i < errors_.size(); ++i) {
-			if (errors_.typedAt(i)->getErrorCode() == errorCode) {
-				return *errors_.typedAt(i);
-			}
-		}
-		return Error();
+	void setErrors(const ListApiObject<Error>& errors)
+	{
+		errors_ = errors;
 	}
 
-    const ListApiObject<Error>& getErrors() const
-    {
-        return errors_;
-    }
+	statuscode_t getStatusCode() const
+	{
+		return statusCode_;
+	}
 
-    ListApiObject<Error>& getErrors()
-    {
-    	return errors_;
-    }
+	void setStatusCode(statuscode_t statusCode)
+	{
+		statusCode_ = statusCode;
+	}
 
-    void setErrors(const ListApiObject<Error>& errors)
-    {
-        errors_ = errors;
-    }
+	QDateTime getTimestamp() const
+	{
+		return timestamp_;
+	}
 
-    statuscode_t getStatusCode() const
-    {
-        return statusCode_;
-    }
-
-    void setStatusCode(statuscode_t statusCode)
-    {
-        statusCode_ = statusCode;
-    }
-
-    QDateTime getTimestamp() const
-    {
-        return timestamp_;
-    }
-
-    void setTimestamp(QDateTime timestamp)
-    {
-        timestamp_ = timestamp;
-    }
+	void setTimestamp(QDateTime timestamp)
+	{
+		timestamp_ = timestamp;
+	}
 
 private:
 	statuscode_t statusCode_;

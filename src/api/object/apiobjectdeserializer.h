@@ -19,6 +19,7 @@
 #include "api/object/messageboxentry.h"
 #include "api/object/preferences.h"
 #include "api/object/response.h"
+#include "api/object/contact.h"
 #include "api/util/util.h"
 #include "api/constants.h"
 
@@ -286,23 +287,29 @@ public:
 		}
 
 	virtual void visit(Error* pObj) {
-			Q_ASSERT(NULL != pObj);
-			validateInput(pObj->getName());
+		Q_ASSERT(NULL != pObj);
+		validateInput(pObj->getName());
 
+		reader_.readNext();
+		while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
+			if (reader_.tokenType() == QXmlStreamReader::StartElement) {
+				if (reader_.name() == "errorCode") {
+					pObj->setErrorCode(reader_.text().toString());
+				} else if (reader_.name() == "shortMessage") {
+					pObj->setShortMessage(reader_.text().toString());
+				} else if (reader_.name() == "longMessage") {
+					pObj->setLongMessage(reader_.text().toString());
+				}
+			}
 			reader_.readNext();
-		    while (!(reader_.tokenType() == QXmlStreamReader::EndElement && reader_.name() == pObj->getName())) {
-		        if (reader_.tokenType() == QXmlStreamReader::StartElement) {
-		        	if (reader_.name() == "errorCode") {
-		        		pObj->setErrorCode(reader_.text().toString());
-		        	} else if (reader_.name() == "shortMessage") {
-		        		pObj->setShortMessage(reader_.text().toString());
-		        	} else if (reader_.name() == "longMessage") {
-		        		pObj->setLongMessage(reader_.text().toString());
-		        	}
-		        }
-		        reader_.readNext();
-		    }
 		}
+	}
+
+
+	virtual void visit(Contact* pObj) {
+		Q_ASSERT(NULL != pObj);
+
+	}
 
 private:
 	void validateInput(QString expectedTag) {

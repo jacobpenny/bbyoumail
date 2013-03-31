@@ -10,6 +10,7 @@
 
 #include "apiobject.h"
 #include "apiobjectvisitor.h"
+#include "pushregistration.h"
 #include <bitset>
 
 namespace ymbb10 {
@@ -18,6 +19,8 @@ namespace object {
 
 class AlertSettings : public ApiObject {
 public:
+	static const QUuid UUID;
+
 	enum EmailAttachment {
 		ATTACHFMT_NO_ATTACHMENT = 0,
 		ATTACHFMT_WAV_FILE = 1,
@@ -39,7 +42,6 @@ public:
 		CEMAILFMT_WEBOS = 6
 	};
 
-
 	static const unsigned int BIT_SEND_EMAIL = 0;
 	static const unsigned int BIT_SEND_TXT = 1;
 	static const unsigned int BIT_WMI_ON = 2;
@@ -49,14 +51,23 @@ public:
 	static const unsigned int BIT_PUSH_TRANSCRIPTION = 1; /* Send PUSH only after transcription has completed. If no transcription plan, this bit behaves identically to bit 0 */
 
 public:
-	AlertSettings();
-	virtual ~AlertSettings();
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
 
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
-	virtual QString getContentType() const { return QString(""); } // implement me
+	virtual QString getContentType() const { return QString("application/xml"); }
 
-    static QString getName()
+public:
+	AlertSettings();
+	virtual ~AlertSettings();
+
+	static QString getName()
     {
         return "alertSettings";
     }

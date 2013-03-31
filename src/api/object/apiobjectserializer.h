@@ -15,6 +15,7 @@
 #include "transcriptionsettings.h"
 #include "alertsettings.h"
 #include "settings.h"
+#include "contact.h"
 #include "messageboxfolder.h"
 #include "messageboxentry.h"
 #include "preferences.h"
@@ -159,6 +160,10 @@ public:
 		writeMember("shortMessage", pObj->getShortMessage());
 		writeMember("longMessage", pObj->getLongMessage());
 		writer_.writeEndElement();
+	}
+
+	virtual void visit(Contact* pObj) {
+
 	}
 
 private:

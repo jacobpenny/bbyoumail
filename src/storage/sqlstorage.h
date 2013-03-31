@@ -87,7 +87,7 @@ protected:
 				"description VARCHAR(64) NULL,"
 				"FOREIGN KEY(userId) REFERENCES users(id));");
 
-		dataAccess_->execute("CREATE TABLE messages("
+		dataAccess_->execute("CREATE TABLE messageboxentries("
 				"id INT PRIMARY KEY NOT NULL,"
 				"userId INT NOT NULL,"
 				"created INT NOT NULL,"

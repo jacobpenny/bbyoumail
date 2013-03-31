@@ -9,6 +9,7 @@
 #define CONTACT_H_
 
 #include "apiobject.h"
+#include "api/object/apiobjectvisitor.h"
 #include "constants.h"
 
 #include <QString>
@@ -20,12 +21,26 @@ namespace object {
 
 class Contact: public ApiObject {
 public:
+	static const QUuid UUID;
+
 	enum ActionType {
 		NORMAL = 0,
 		DITCH = 1,
 		NUMBER_PROMPT = 2,
 		PASSWORD_PROMPT = 3
 	};
+public:
+	// Overrides
+	// TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
+
+	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
+
+	virtual QString getContentType() const { return QString("application/xml"); }
 
 public:
 	ActionType getActionType() const {

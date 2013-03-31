@@ -18,6 +18,8 @@ namespace object {
 
 class TranscriptionSettings : public ApiObject {
 public:
+	static const QUuid UUID;
+
 	enum TranscribeFor {
 		ALL_CALLERS = 0,
 		ONLY_CONTACT = 1,
@@ -25,12 +27,21 @@ public:
 	};
 
 public:
-	TranscriptionSettings();
-	virtual ~TranscriptionSettings();
+	//Overrides
+	//TODO implementation
+	virtual QList<QString> getProjection() const { return QList<QString>(); }
+
+	virtual const QVariantMap& getContentValues() const { return QVariantMap(); }
+
+	virtual void create(const QVariantMap& contentValues) {}
 
 	virtual void accept(ApiObjectVisitor* pVisitor) { pVisitor->visit(this); }
 
-	virtual QString getContentType() const { return QString(""); } // implement me
+	virtual QString getContentType() const { return QString("application/xml"); }
+
+public:
+	TranscriptionSettings();
+	virtual ~TranscriptionSettings();
 
 	static QString getName() { return "transcriptionSettings"; }
 
